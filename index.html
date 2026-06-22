@@ -110,8 +110,11 @@
         .boost-btn:hover:not(:disabled) { background-color: #c69400; }
         .action-btn:disabled { background-color: var(--disabled-color) !important; color: #888 !important; cursor: not-allowed; }
 
-        .box-panel { background: linear-gradient(135deg, #3a2618, #23160e); border: 2px solid #5c3a21; text-align: center; }
-        .box-anim-container { font-size: 3.5rem; margin: 10px 0; cursor: pointer; transition: transform 0.1s; display: inline-block;}
+        .box-panel { border: 2px solid #5c3a21; text-align: center; margin-bottom: 5px; }
+        .box-wood { background: linear-gradient(135deg, #3a2618, #23160e); border-color: #5c3a21; }
+        .box-iron { background: linear-gradient(135deg, #2c3e50, #1a252f); border-color: #7f8c8d; }
+        
+        .box-anim-container { font-size: 3rem; margin: 5px 0; cursor: pointer; transition: transform 0.1s; display: inline-block;}
         .box-anim-container.shake { animation: shake 0.4s ease-in-out; }
         @keyframes shake {
             0%, 100% { transform: rotate(0deg); }
@@ -119,7 +122,6 @@
             40%, 80% { transform: rotate(10deg); }
         }
 
-        /* Инвентарь с мини-картинками */
         .inventory-grid { display: flex; flex-direction: column; gap: 8px; }
         .inv-item { display: flex; align-items: center; justify-content: space-between; padding: 10px; border-radius: 6px; background: #1f1f1f; border-left: 4px solid #fff; gap: 10px; }
         .inv-item.equipped { background: #1a271d; border-right: 2px solid var(--success-color); }
@@ -137,12 +139,11 @@
         .reset-btn { background-color: transparent; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 8px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: all 0.2s; }
         .reset-btn:hover { background-color: var(--danger-color); color: white; }
 
-        /* Игровая зона */
-        .game-container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; padding: 20px; gap: 20px; }
-        .stats-panel { position: absolute; top: 30px; font-size: 2rem; font-weight: bold; display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.4); padding: 10px 20px; border-radius: 30px; border: 1px solid #333; }
+        .game-container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; padding: 20px; gap: 15px; box-sizing: border-box; min-width: 0; }
+        .stats-panel { position: absolute; top: 20px; font-size: 2rem; font-weight: bold; display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.6); padding: 8px 20px; border-radius: 30px; border: 1px solid #333; z-index: 5; }
         .coin-icon { color: #ffd700; text-shadow: 0 0 10px rgba(255,215,0,0.5); }
 
-        .meme-card-wrapper { position: relative; width: 340px; height: 520px; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.7); cursor: pointer; background-color: #000; border: 3px solid #333; transition: transform 0.2s, border-color 0.3s; }
+        .meme-card-wrapper { position: relative; width: 100%; max-width: 330px; height: 480px; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.7); cursor: pointer; background-color: #000; border: 3px solid #333; transition: transform 0.2s, border-color 0.3s; margin-top: 60px; }
         .meme-card-wrapper:hover:not(.active):not(.cooldown) { transform: scale(1.02); border-color: var(--accent-color); }
         .meme-card-wrapper.cooldown { cursor: not-allowed; border-color: var(--warning-color); }
         .card-preview { width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity 0.3s; }
@@ -154,30 +155,119 @@
         .cooldown-progress { width: 0%; height: 100%; background-color: var(--success-color); transition: width linear; }
         .meme-card-wrapper.cooldown .cooldown-progress { background-color: var(--warning-color); }
         
-        .status-text { font-size: 1.1rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); text-align: center; min-height: 24px; }
+        .status-text { font-size: 1rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); text-align: center; min-height: 24px; padding: 0 10px; }
         .timer-text { font-size: 0.85rem; font-weight: bold; color: var(--warning-color); }
 
-        /* Кнопка стоп */
         .stop-btn { background-color: var(--danger-color); padding: 12px 24px; font-size: 1rem; box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4); display: none; }
         .stop-btn:hover { background-color: #bd2130; }
+
+        .quest-box { font-size: 0.85rem; border: 1px dashed #555; padding: 8px; border-radius: 6px; background: #1a1a1a; margin-top: 5px; text-align: left; }
+        .quest-title { font-weight: bold; color: var(--warning-color); margin-bottom: 3px; }
+        .quest-progress { color: #28a745; font-weight: bold; }
+
+        /* Мобильный переключатель снизу экрана */
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #1a1a1a;
+            border-top: 2px solid #333;
+            z-index: 100;
+        }
+        .mobile-nav-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            color: #888;
+            padding: 12px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-align: center;
+        }
+        .mobile-nav-btn.active {
+            color: #fff;
+            background-color: #252525;
+            border-bottom: 3px solid var(--accent-color);
+        }
+
+        /* --- АДАПТИВНОСТЬ ДЛЯ ТЕЛЕФОНОВ (ЭКРАНЫ МЕНЕЕ 1024px) --- */
+        @media (max-width: 1024px) {
+            body {
+                flex-direction: column;
+                overflow-y: auto;
+                height: auto;
+                padding-bottom: 60px; /* Место для нижнего меню */
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                box-shadow: none;
+                display: none; /* Скрываем по умолчанию, управляется через JS */
+                padding: 15px;
+            }
+            
+            .upgrade-sidebar { border-right: none; border-bottom: 1px solid #333; }
+            .boost-sidebar { border-left: none; border-top: 1px solid #333; }
+
+            .mobile-nav {
+                display: flex;
+            }
+
+            .game-container {
+                width: 100%;
+                min-height: 80vh;
+                padding: 10px;
+                order: -1; /* Карта всегда сверху на мобилках */
+            }
+
+            .meme-card-wrapper {
+                height: 400px; /* Чуть ниже, чтобы влезало на экраны мобильных */
+                margin-top: 50px;
+            }
+
+            .stats-panel {
+                font-size: 1.6rem;
+                top: 10px;
+            }
+            
+            /* Делаем сетку ящиков красивее на мобилках */
+            #tab-memes {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <div class="sidebar upgrade-sidebar">
+    <!-- МОБИЛЬНОЕ НИЖНЕЕ МЕНЮ -->
+    <div class="mobile-nav">
+        <button class="mobile-nav-btn active" onclick="switchMobileSection('game')">🎮 Игра</button>
+        <button class="mobile-nav-btn" onclick="switchMobileSection('upgrades')">⚡ Улучшения</button>
+        <button class="mobile-nav-btn" onclick="switchMobileSection('memes')">🎒 Рюкзак</button>
+        <button class="mobile-nav-btn" onclick="switchMobileSection('boosts')">🚀 Бусты</button>
+    </div>
+
+    <!-- ЛЕВАЯ ПАНЕЛЬ -->
+    <div class="sidebar upgrade-sidebar" id="sidebar-left">
         <div class="tabs-nav">
-            <button class="tab-btn active" onclick="switchTab('upgrades')">Улучшения</button>
-            <button class="tab-btn" onclick="switchTab('memes')">Магазин & Рюкзак</button>
+            <button class="tab-btn active" id="tab-btn-upgrades" onclick="switchTab('upgrades')">Улучшения</button>
+            <button class="tab-btn" id="tab-btn-memes" onclick="switchTab('memes')">Магазин & Рюкзак</button>
         </div>
 
         <!-- ВКЛАДКА 1 -->
         <div id="tab-upgrades" class="tab-content">
             <div class="card-panel">
                 <div class="card-header">
-                    <h3>Множитель монет</h3>
-                    <span class="lvl-badge" id="up1-lvl">Ур. 0</span>
+                    <h3>Множитель клика</h3>
+                    <span class="lvl-badge" id="up1-lvl">Ур. 1</span>
                 </div>
-                <p>Базовый доход: <span id="income-val">10</span> 💰/сек</p>
+                <p>Множитель прокачки: <span id="mult-upgrade-val" style="color: #ffd700; font-weight: bold;">x1.00</span></p>
                 <p>Цена: <span id="up1-cost">100</span> монет</p>
                 <button class="action-btn upgrade-btn" id="up1-btn" onclick="buyMultiplier()">Улучшить</button>
             </div>
@@ -198,25 +288,25 @@
                     <span class="lvl-badge" id="up3-lvl">Ур. 0</span>
                 </div>
                 <p>Перезарядка: <span id="cooldown-val">10</span> сек</p>
-                <p>Цена: <span id="up3-cost">100</span> монет</p>
+                <p>Цена: <span id="up3-cost">5000</span> монет</p>
                 <button class="action-btn upgrade-btn" id="up3-btn" onclick="buyCooldown()">Уменьшить (-0.5с)</button>
             </div>
         </div>
 
         <!-- ВКЛАДКА 2 -->
         <div id="tab-memes" class="tab-content" style="display: none;">
-            <div class="card-panel box-panel">
+            <div class="card-panel box-panel box-wood">
                 <h3>Деревянный ящик</h3>
-                <p>Цена: <span style="color: #ffd700; font-weight:bold;">1500 монет</span></p>
-                <div class="box-anim-container" id="box-emoji">📦</div>
-                <p style="font-size:0.75rem; color:#d4a373; line-height: 1.3;">
-                    Шансы в ящике:<br>
-                    🟢 Обычный (60%): Wobble / Meow<br>
-                    🔵 Редкий (25%): Gigachad<br>
-                    🟣 Эпический (12%): Pedro<br>
-                    🟠 Легендарный (3%): Congregation
-                </p>
-                <button class="action-btn upgrade-btn" id="buy-box-btn" onclick="openMemeBox()" style="background:#5c3a21;">Открыть ящик</button>
+                <p>Цена: <span style="color: #ffd700; font-weight:bold;">5000 монет</span></p>
+                <div class="box-anim-container" id="box-wood-emoji" onclick="openMemeBox('wood')">📦</div>
+                <button class="action-btn upgrade-btn" id="buy-wood-btn" onclick="openMemeBox('wood')" style="background:#5c3a21; padding: 6px;">Открыть</button>
+            </div>
+
+            <div class="card-panel box-panel box-iron">
+                <h3>Железный ящик</h3>
+                <p>Цена: <span style="color: #ffd700; font-weight:bold;">50000 монет</span></p>
+                <div class="box-anim-container" id="box-iron-emoji" onclick="openMemeBox('iron')">🧳</div>
+                <button class="action-btn upgrade-btn" id="buy-iron-btn" onclick="openMemeBox('iron')" style="background:#4f5d73; padding: 6px;">Открыть</button>
             </div>
 
             <h3>Рюкзак (Мемы)</h3>
@@ -232,7 +322,8 @@
         <button class="reset-btn" onclick="resetGame()">Сбросить всё</button>
     </div>
 
-    <div class="game-container">
+    <!-- ЦЕНТР (ИГРОВАЯ ЗОНА) -->
+    <div class="game-container" id="game-center">
         <div class="stats-panel">
             <span class="coin-icon">💰</span>
             <span id="balance-display">0</span>
@@ -248,26 +339,33 @@
         </div>
 
         <div class="status-text" id="status-display">Нажми на карту, чтобы активировать мем!</div>
-        <!-- Кнопка принудительной остановки -->
         <button class="action-btn stop-btn" id="stop-farm-btn" onclick="stopMemeFarm()">🛑 Остановить фарм</button>
     </div>
 
-    <div class="sidebar boost-sidebar">
+    <!-- ПРАВАЯ ПАНЕЛЬ (БУСТЫ) -->
+    <div class="sidebar boost-sidebar" id="sidebar-right">
         <h2>Временные Бусты</h2>
+        
         <div class="card-panel">
             <h3>Умножение доходов X2</h3>
-            <p>Длительность: 5 минут</p>
-            <p>Перезарядка: 2 минуты</p>
+            <p>Длительность: 5 мин | Перезарядка: 5 мин</p>
+            <div class="quest-box" id="questX2-box">
+                <div class="quest-title" id="questX2-title">Загрузка квеста...</div>
+                <div>Прогресс: <span class="quest-progress" id="questX2-prog">0/0</span></div>
+            </div>
             <span id="boostX2-status" class="timer-text"></span>
-            <button class="action-btn boost-btn" id="boostX2-btn" onclick="activateBoost('X2')">Включить X2</button>
+            <button class="action-btn boost-btn" id="boostX2-btn" onclick="claimBoost('X2')">Активировать Буст</button>
         </div>
 
         <div class="card-panel">
             <h3>Мега Умножение X5</h3>
-            <p>Длительность: 5 минут</p>
-            <p>Перезарядка: 10 минут</p>
+            <p>Длительность: 5 мин | Перезарядка: 15 мин</p>
+            <div class="quest-box" id="questX5-box">
+                <div class="quest-title" id="questX5-title">Загрузка квеста...</div>
+                <div>Прогресс: <span class="quest-progress" id="questX5-prog">0/0</span></div>
+            </div>
             <span id="boostX5-status" class="timer-text"></span>
-            <button class="action-btn boost-btn" id="boostX5-btn" onclick="activateBoost('X5')">Включить X5</button>
+            <button class="action-btn boost-btn" id="boostX5-btn" onclick="claimBoost('X5')">Активировать Буст</button>
         </div>
     </div>
 
@@ -278,19 +376,39 @@
             'meow': { id: 'meow', name: 'Meow', mult: 1.8, rarity: 'Обычный', color: 'rgba(255,255,255,0.7)', img: 'meow.jpg', vid: 'meow.mp4' },
             'giga': { id: 'giga', name: 'Gigachad', mult: 3.5, rarity: 'Редкий', color: 'var(--rarity-rare)', img: 'giga.jpg', vid: 'giga.mp4' },
             'pedro': { id: 'pedro', name: 'Pedro Racoon', mult: 6.0, rarity: 'Эпический', color: 'var(--rarity-epic)', img: 'pedro.jpg', vid: 'pedro.mp4' },
-            'congr': { id: 'congr', name: 'Congregation', mult: 20.0, rarity: 'Легендарный', color: 'var(--rarity-legendary)', img: 'congr.jpg', vid: 'congr.mp4' }
+            'congr': { id: 'congr', name: 'Congregation', mult: 20.0, rarity: 'Легендарный', color: 'var(--rarity-legendary)', img: 'congr.jpg', vid: 'congr.mp4' },
+            
+            // Железный ящик
+            'congr_iron': { id: 'congr_iron', name: 'Congregation (Iron)', mult: 20.0, rarity: 'Обычный', color: 'rgba(255,255,255,0.7)', img: 'congr.jpg', vid: 'congr.mp4' },
+            'tung': { id: 'tung', name: 'Tung tung tung angel', mult: 25.0, rarity: 'Обычный', color: '#1abc9c', img: 'tung.jpg', vid: 'tung.mp4' },
+            'nectar': { id: 'nectar', name: 'Nectaryinki', mult: 35.0, rarity: 'Редкий', color: 'var(--rarity-rare)', img: 'nectar.jpg', vid: 'nectar.mp4' },
+            'sahur': { id: 'sahur', name: 'Last sahur', mult: 45.0, rarity: 'Эпический', color: 'var(--rarity-epic)', img: 'sahur.jpg', vid: 'sahur.mp4' },
+            'sigma': { id: 'sigma', name: 'Sigma Cat', mult: 75.0, rarity: 'Легендарный', color: 'var(--rarity-legendary)', img: 'sigma.jpg', vid: 'sigma.mp4' }
+        };
+
+        const QUEST_POOLS = {
+            'X2': [
+                { id: 'coins', text: 'Заработать за сессию монет: ', target: 10000 },
+                { id: 'activations', text: 'Активировать мемы раз: ', target: 8 },
+                { id: 'open_box', text: 'Открыть любой ящик раз: ', target: 1 }
+            ],
+            'X5': [
+                { id: 'coins', text: 'Заработать за сессию монет: ', target: 50000 },
+                { id: 'activations', text: 'Активировать мемы раз: ', target: 25 },
+                { id: 'spend', text: 'Потратить на улучшения монет: ', target: 15000 }
+            ]
         };
 
         const defaultState = {
             coins: 0,
-            baseIncome: 10,
+            baseIncome: 10, 
             duration: 5,
             cooldown: 10,
-            costs: { multiplier: 100, duration: 100, cooldown: 100 },
-            levels: { multiplier: 0, duration: 0, cooldown: 0 },
+            costs: { multiplier: 100, duration: 100, cooldown: 5000 },
+            levels: { multiplier: 1, duration: 0, cooldown: 0 },
             boosts: {
-                X2: { activeUntil: 0, cooldownUntil: 0 },
-                X5: { activeUntil: 0, cooldownUntil: 0 }
+                X2: { activeUntil: 0, cooldownUntil: 0, quest: null, progress: 0, completed: false },
+                X5: { activeUntil: 0, cooldownUntil: 0, quest: null, progress: 0, completed: false }
             },
             ownedMemes: ['sir'],
             equippedMeme: 'sir'
@@ -309,7 +427,7 @@
         const progressBar = document.getElementById('progress-bar');
         const statusDisplay = document.getElementById('status-display');
         const stopFarmBtn = document.getElementById('stop-farm-btn');
-        const incomeVal = document.getElementById('income-val');
+        const multUpgradeVal = document.getElementById('mult-upgrade-val');
         const durationVal = document.getElementById('duration-val');
         const cooldownVal = document.getElementById('cooldown-val');
         const up1Cost = document.getElementById('up1-cost');
@@ -322,10 +440,9 @@
         const totalCpsVal = document.getElementById('total-cps-val');
         const activeMemeName = document.getElementById('active-meme-name');
         const inventoryDisplay = document.getElementById('inventory-display');
-        const buyBoxBtn = document.getElementById('buy-box-btn');
 
         function loadGame() {
-            const savedData = localStorage.getItem('excuseMeSir_v8_save');
+            const savedData = localStorage.getItem('excuseMeSir_v11_save');
             if (savedData) {
                 try {
                     gameState = JSON.parse(savedData);
@@ -333,41 +450,127 @@
                     if(!gameState.levels) gameState.levels = JSON.parse(JSON.stringify(defaultState.levels));
                     if(!gameState.ownedMemes) gameState.ownedMemes = ['sir'];
                     if(!gameState.equippedMeme) gameState.equippedMeme = 'sir';
+                    if(!gameState.costs) gameState.costs = JSON.parse(JSON.stringify(defaultState.costs));
                 } catch (e) {
                     gameState = JSON.parse(JSON.stringify(defaultState));
                 }
             } else {
                 gameState = JSON.parse(JSON.stringify(defaultState));
             }
+            initQuest('X2');
+            initQuest('X5');
         }
 
         function saveGame() {
-            localStorage.setItem('excuseMeSir_v8_save', JSON.stringify(gameState));
+            localStorage.setItem('excuseMeSir_v11_save', JSON.stringify(gameState));
         }
 
         function resetGame() {
-            if (confirm("Вы уверены, что хотите обнулить весь прогресс?")) {
+            if (confirm("Вы уверены, что хотите обнулить прогресс?")) {
                 stopMemeFarm();
-                localStorage.removeItem('excuseMeSir_v8_save');
+                localStorage.removeItem('excuseMeSir_v11_save');
                 gameState = JSON.parse(JSON.stringify(defaultState));
+                initQuest('X2', true);
+                initQuest('X5', true);
                 switchMeme(gameState.equippedMeme);
                 updateUI();
                 statusDisplay.innerText = "Прогресс сброшен!";
             }
         }
 
+        function initQuest(type, forceNew = false) {
+            if (!gameState.boosts[type].quest || forceNew) {
+                const pool = QUEST_POOLS[type];
+                const randomQuest = pool[Math.floor(Math.random() * pool.length)];
+                gameState.boosts[type].quest = { ...randomQuest };
+                gameState.boosts[type].progress = 0;
+                gameState.boosts[type].completed = false;
+            }
+        }
+
+        function updateQuestProgress(actionId, value) {
+            ['X2', 'X5'].forEach(type => {
+                let bData = gameState.boosts[type];
+                const now = Date.now();
+                if (!bData.completed && now > bData.activeUntil && now > bData.cooldownUntil) {
+                    if (bData.quest && bData.quest.id === actionId) {
+                        bData.progress += value;
+                        if (bData.progress >= bData.quest.target) {
+                            bData.progress = bData.quest.target;
+                            bData.completed = true;
+                        }
+                    }
+                }
+            });
+        }
+
+        function claimBoost(type) {
+            const now = Date.now();
+            let bData = gameState.boosts[type];
+            if (!bData.completed) return;
+
+            let durationMs = 5 * 60 * 1000;
+            let cdMs = (type === 'X2') ? (5 * 60 * 1000) : (15 * 60 * 1000);
+
+            bData.activeUntil = now + durationMs;
+            bData.cooldownUntil = now + durationMs + cdMs;
+            bData.completed = false;
+            
+            initQuest(type, true);
+            saveGame();
+            updateUI();
+        }
+
+        // Переключение вкладок на ПК версии
         function switchTab(tabId) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
+            document.getElementById('tab-btn-upgrades').classList.remove('active');
+            document.getElementById('tab-btn-memes').classList.remove('active');
+            document.getElementById('tab-upgrades').style.display = 'none';
+            document.getElementById('tab-memes').style.display = 'none';
             
             if(tabId === 'upgrades') {
-                document.querySelector('.tab-btn[onclick="switchTab(\'upgrades\')"]').classList.add('active');
+                document.getElementById('tab-btn-upgrades').classList.add('active');
                 document.getElementById('tab-upgrades').style.display = 'flex';
             } else {
-                document.querySelector('.tab-btn[onclick="switchTab(\'memes\')"]').classList.add('active');
+                document.getElementById('tab-btn-memes').classList.add('active');
                 document.getElementById('tab-memes').style.display = 'flex';
                 renderInventory();
             }
+        }
+
+        // Функция логики адаптивного переключения секций для мобильных телефонов
+        function switchMobileSection(section) {
+            document.querySelectorAll('.mobile-nav-btn').forEach(b => b.classList.remove('active'));
+            
+            const sidebarLeft = document.getElementById('sidebar-left');
+            const sidebarRight = document.getElementById('sidebar-right');
+            const gameCenter = document.getElementById('game-center');
+
+            // Сброс видимости для мобильной логики
+            sidebarLeft.style.display = 'none';
+            sidebarRight.style.display = 'none';
+            gameCenter.style.display = 'none';
+
+            // Находим нажатую кнопку по тексту или параметру
+            const btn = Array.from(document.querySelectorAll('.mobile-nav-btn')).find(b => b.getAttribute('onclick').includes(section));
+            if(btn) btn.classList.add('active');
+
+            if (section === 'game') {
+                gameCenter.style.display = 'flex';
+            } else if (section === 'upgrades') {
+                sidebarLeft.style.display = 'flex';
+                switchTab('upgrades');
+            } else if (section === 'memes') {
+                sidebarLeft.style.display = 'flex';
+                switchTab('memes');
+            } else if (section === 'boosts') {
+                sidebarRight.style.display = 'flex';
+            }
+        }
+
+        function getUpgradeMultiplier() {
+            let lvl = gameState.levels.multiplier;
+            return 1 + (lvl - 1) * 0.50 + Math.pow(lvl - 1, 1.5) * 0.15;
         }
 
         function getTempMultiplier() {
@@ -380,18 +583,25 @@
 
         function getFinalMultiplier() {
             const currentMemeData = MEME_REGISTRY[gameState.equippedMeme] || MEME_REGISTRY['sir'];
-            return currentMemeData.mult * getTempMultiplier();
+            return currentMemeData.mult * getUpgradeMultiplier() * getTempMultiplier();
         }
 
         function updateUI() {
             balanceDisplay.innerText = Math.floor(gameState.coins);
-            incomeVal.innerText = gameState.baseIncome;
+            multUpgradeVal.innerText = `x${getUpgradeMultiplier().toFixed(2)}`;
             durationVal.innerText = gameState.duration;
             cooldownVal.innerText = gameState.cooldown.toFixed(1);
             
             up1Cost.innerText = gameState.costs.multiplier;
             up2Cost.innerText = gameState.costs.duration;
-            up3Cost.innerText = gameState.costs.cooldown;
+            
+            if(gameState.cooldown <= 1.0) {
+                up3Cost.innerText = "МАКСИМУМ";
+                document.getElementById('up3-btn').disabled = true;
+            } else {
+                up3Cost.innerText = gameState.costs.cooldown;
+                document.getElementById('up3-btn').disabled = gameState.coins < gameState.costs.cooldown;
+            }
 
             up1Lvl.innerText = `Ур. ${gameState.levels.multiplier}`;
             up2Lvl.innerText = `Ур. ${gameState.levels.duration}`;
@@ -399,31 +609,70 @@
 
             document.getElementById('up1-btn').disabled = gameState.coins < gameState.costs.multiplier;
             document.getElementById('up2-btn').disabled = gameState.coins < gameState.costs.duration;
-            document.getElementById('up3-btn').disabled = (gameState.coins < gameState.costs.cooldown) || (gameState.cooldown <= 1);
-            buyBoxBtn.disabled = gameState.coins < 1500;
+            
+            document.getElementById('buy-wood-btn').disabled = gameState.coins < 5000;   
+            document.getElementById('buy-iron-btn').disabled = gameState.coins < 50000;  
 
             const currentMeme = MEME_REGISTRY[gameState.equippedMeme];
             activeMemeName.innerText = currentMeme.name;
             activeMemeName.style.color = currentMeme.color;
             
             let finalMult = getFinalMultiplier();
-            totalMultVal.innerText = `x${finalMult.toFixed(1)}`;
+            totalMultVal.innerText = `x${finalMult.toFixed(2)}`;
             totalCpsVal.innerText = `${Math.floor(gameState.baseIncome * finalMult)} 💰/сек`;
 
-            updateBoostButtonsUI();
+            updateQuestsAndBoostsUI();
+        }
+
+        function updateQuestsAndBoostsUI() {
+            const now = Date.now();
+            ['X2', 'X5'].forEach(type => {
+                const bBtn = document.getElementById(`boost${type}-btn`);
+                const bStatus = document.getElementById(`boost${type}-status`);
+                const qBox = document.getElementById(`quest${type}-box`);
+                const qTitle = document.getElementById(`quest${type}-title`);
+                const qProg = document.getElementById(`quest${type}-prog`);
+                
+                let bData = gameState.boosts[type];
+
+                if (bData.activeUntil > now) {
+                    bBtn.disabled = true;
+                    qBox.style.display = "none";
+                    let rem = Math.ceil((bData.activeUntil - now) / 1000);
+                    bStatus.innerText = `Активен: ${formatTime(rem)}`;
+                    bStatus.style.color = "var(--success-color)";
+                } else if (bData.cooldownUntil > now) {
+                    bBtn.disabled = true;
+                    qBox.style.display = "none";
+                    let rem = Math.ceil((bData.cooldownUntil - now) / 1000);
+                    bStatus.innerText = `Перезарядка: ${formatTime(rem)}`;
+                    bStatus.style.color = "var(--warning-color)";
+                } else {
+                    qBox.style.display = "block";
+                    qTitle.innerText = bData.quest.text + bData.quest.target;
+                    qProg.innerText = `${Math.floor(bData.progress)}/${bData.quest.target}`;
+                    
+                    if (bData.completed) {
+                        bBtn.disabled = false;
+                        bStatus.innerText = "Квест выполнен! Нажми для старта";
+                        bStatus.style.color = "var(--success-color)";
+                    } else {
+                        bBtn.disabled = true;
+                        bStatus.innerText = "Выполняйте квест...";
+                        bStatus.style.color = "#aaa";
+                    }
+                }
+            });
         }
 
         function renderInventory() {
             inventoryDisplay.innerHTML = '';
             Object.keys(MEME_REGISTRY).forEach(key => {
                 const meme = MEME_REGISTRY[key];
-                const isOwned = gameState.ownedMemes.includes(key);
-                
-                if (isOwned) {
+                if (gameState.ownedMemes.includes(key)) {
                     const isEquipped = gameState.equippedMeme === key;
                     const itemHtml = `
                         <div class="inv-item ${isEquipped ? 'equipped' : ''}" style="border-left-color: ${meme.color}">
-                            <!-- Добавлена микро-картинка для проверки видимости -->
                             <img src="${meme.img}" class="inv-img-preview" alt="img">
                             <div class="inv-info">
                                 <div class="inv-title-line">
@@ -443,10 +692,7 @@
         }
 
         function equipMeme(id) {
-            if (isPlaying || isCooldown) {
-                alert("Нельзя менять мем во время фарма или перезарядки!");
-                return;
-            }
+            if (isPlaying || isCooldown) return alert("Нельзя менять мем во время фарма!");
             if(gameState.ownedMemes.includes(id)) {
                 gameState.equippedMeme = id;
                 switchMeme(id);
@@ -462,75 +708,50 @@
             cardVid.src = data.vid;
         }
 
-        function openMemeBox() {
-            if (gameState.coins < 1500) return;
+        function openMemeBox(boxType) {
+            let cost = (boxType === 'wood') ? 5000 : 50000;
+            if (gameState.coins < cost) return;
 
-            gameState.coins -= 1500;
-            buyBoxBtn.disabled = true;
+            gameState.coins -= cost;
+            document.getElementById(`buy-${boxType}-btn`).disabled = true;
             
-            const boxEmoji = document.getElementById('box-emoji');
-            boxEmoji.classList.add('shake');
+            const emojiEl = document.getElementById(`box-${boxType}-emoji`);
+            emojiEl.classList.add('shake');
 
             setTimeout(() => {
-                boxEmoji.classList.remove('shake');
-                
+                emojiEl.classList.remove('shake');
                 let rand = Math.random() * 100;
                 let rolledId = 'wobble';
 
-                if (rand < 60) {
-                    rolledId = Math.random() < 0.5 ? 'wobble' : 'meow';
-                } 
-                else if (rand < 85) {
-                    rolledId = 'giga';
-                } 
-                else if (rand < 97) {
-                    rolledId = 'pedro';
-                } 
-                else {
-                    rolledId = 'congr';
+                if (boxType === 'wood') {
+                    if (rand < 60) rolledId = Math.random() < 0.5 ? 'wobble' : 'meow';
+                    else if (rand < 85) rolledId = 'giga';
+                    else if (rand < 97) rolledId = 'pedro';
+                    else rolledId = 'congr';
+                } else {
+                    if (rand < 25) rolledId = 'congr_iron'; 
+                    else if (rand < 50) rolledId = 'tung';     
+                    else if (rand < 75) rolledId = 'nectar';   
+                    else if (rand < 92) rolledId = 'sahur';    
+                    else rolledId = 'sigma';                   
                 }
 
                 const rolledMeme = MEME_REGISTRY[rolledId];
                 
                 if (!gameState.ownedMemes.includes(rolledId)) {
                     gameState.ownedMemes.push(rolledId);
-                    alert(`🎉 Из ящика выпал НОВЫЙ мем: ${rolledMeme.name} (x${rolledMeme.mult.toFixed(1)})!`);
+                    alert(`🎉 Из ящика выпал новый мем: ${rolledMeme.name} (x${rolledMeme.mult.toFixed(1)})!`);
                 } else {
-                    gameState.coins += 400;
-                    alert(`📦 Повторка: ${rolledMeme.name}. Получено компенсации 400 монет.`);
+                    let compensation = (boxType === 'wood') ? 1200 : 12000;
+                    gameState.coins += compensation;
+                    alert(`📦 Повторка: ${rolledMeme.name}. Получено компенсации ${compensation} монет.`);
                 }
 
+                updateQuestProgress('open_box', 1);
                 saveGame();
                 updateUI();
-                if(document.getElementById('tab-memes').style.display !== 'none') {
-                    renderInventory();
-                }
+                if(document.getElementById('tab-memes').style.display !== 'none') renderInventory();
             }, 400);
-        }
-
-        function updateBoostButtonsUI() {
-            const now = Date.now();
-            ['X2', 'X5'].forEach(type => {
-                const bBtn = document.getElementById(`boost${type}-btn`);
-                const bStatus = document.getElementById(`boost${type}-status`);
-                const data = gameState.boosts[type];
-
-                if (data.activeUntil > now) {
-                    bBtn.disabled = true;
-                    let rem = Math.ceil((data.activeUntil - now) / 1000);
-                    bStatus.innerText = `Активен: ${formatTime(rem)}`;
-                    bStatus.style.color = "var(--success-color)";
-                } else if (data.cooldownUntil > now) {
-                    bBtn.disabled = true;
-                    let rem = Math.ceil((data.cooldownUntil - now) / 1000);
-                    bStatus.innerText = `Перезарядка: ${formatTime(rem)}`;
-                    bStatus.style.color = "var(--warning-color)";
-                } else {
-                    bBtn.disabled = false;
-                    bStatus.innerText = "Готов к активации";
-                    bStatus.style.color = "#aaa";
-                }
-            });
         }
 
         function formatTime(seconds) {
@@ -539,27 +760,13 @@
             return `${m}:${s < 10 ? '0' : ''}${s}`;
         }
 
-        function activateBoost(type) {
-            const now = Date.now();
-            if (gameState.boosts[type].activeUntil > now || gameState.boosts[type].cooldownUntil > now) return;
-
-            let durationMs = 5 * 60 * 1000;
-            let cdMs = (type === 'X2') ? (2 * 60 * 1000) : (10 * 60 * 1000);
-
-            gameState.boosts[type].activeUntil = now + durationMs;
-            gameState.boosts[type].cooldownUntil = now + durationMs + cdMs;
-
-            saveGame();
-            updateUI();
-        }
-
         function activateMeme() {
             if (isPlaying || isCooldown) return;
 
             isPlaying = true;
             memeCard.classList.add('active');
             statusDisplay.innerText = "Фарм идет...";
-            stopFarmBtn.style.display = "block"; // Показываем кнопку стоп
+            stopFarmBtn.style.display = "block";
 
             cardVid.muted = false;
             cardVid.currentTime = 0;
@@ -569,24 +776,23 @@
             progressBar.style.width = '100%';
 
             incomeInterval = setInterval(() => {
-                gameState.coins += (gameState.baseIncome * getFinalMultiplier());
+                let generated = gameState.baseIncome * getFinalMultiplier();
+                gameState.coins += generated;
+                updateQuestProgress('coins', generated);
                 updateUI();
                 saveGame();
             }, 1000);
 
             mainTimeout = setTimeout(() => {
+                updateQuestProgress('activations', 1);
                 endFarmSequence();
             }, gameState.duration * 1000);
         }
 
-        // Экстренное прерывание фарма по кнопке
         function stopMemeFarm() {
             if (!isPlaying) return;
-            
-            // Чистим запущенные процессы и таймеры
             clearInterval(incomeInterval);
             clearTimeout(mainTimeout);
-            
             endFarmSequence();
         }
 
@@ -595,7 +801,7 @@
             cardVid.pause();
             memeCard.classList.remove('active');
             isPlaying = false;
-            stopFarmBtn.style.display = "none"; // Прячем кнопку стоп
+            stopFarmBtn.style.display = "none";
             startCooldown();
         }
 
@@ -621,16 +827,12 @@
             }, gameState.cooldown * 1000);
         }
 
-        function increaseCost(type) {
-            gameState.costs[type] = Math.floor(gameState.costs[type] * 1.5);
-        }
-
         function buyMultiplier() {
             if (gameState.coins >= gameState.costs.multiplier) {
                 gameState.coins -= gameState.costs.multiplier;
-                gameState.baseIncome += 5;
+                updateQuestProgress('spend', gameState.costs.multiplier);
                 gameState.levels.multiplier += 1;
-                increaseCost('multiplier');
+                gameState.costs.multiplier = Math.floor(gameState.costs.multiplier * 1.6);
                 updateUI();
                 saveGame();
             }
@@ -639,34 +841,52 @@
         function buyDuration() {
             if (gameState.coins >= gameState.costs.duration) {
                 gameState.coins -= gameState.costs.duration;
+                updateQuestProgress('spend', gameState.costs.duration);
                 gameState.duration += 1;
                 gameState.levels.duration += 1;
-                increaseCost('duration');
+                gameState.costs.duration = Math.floor(gameState.costs.duration * 1.5);
                 updateUI();
                 saveGame();
             }
         }
 
         function buyCooldown() {
-            if (gameState.coins >= gameState.costs.cooldown && gameState.cooldown > 1) {
+            if (gameState.cooldown <= 1.0) return;
+            if (gameState.coins >= gameState.costs.cooldown) {
                 gameState.coins -= gameState.costs.cooldown;
+                updateQuestProgress('spend', gameState.costs.cooldown);
                 gameState.cooldown -= 0.5;
                 gameState.levels.cooldown += 1;
-                increaseCost('cooldown');
+                gameState.costs.cooldown = Math.floor(gameState.costs.cooldown * 2.2);
                 updateUI();
                 saveGame();
             }
         }
 
+        // Проверка при ресайзе, чтобы вернуть дефолтный вид для ПК
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 1024) {
+                document.getElementById('sidebar-left').style.display = 'flex';
+                document.getElementById('sidebar-right').style.display = 'flex';
+                document.getElementById('game-center').style.display = 'flex';
+            } else {
+                // Если перешли на мобильный размер, активируем вкладку игры
+                switchMobileSection('game');
+            }
+        });
+
         setInterval(() => {
-            updateBoostButtonsUI();
-            let finalMult = getFinalMultiplier();
-            totalMultVal.innerText = `x${finalMult.toFixed(1)}`;
-            totalCpsVal.innerText = `${Math.floor(gameState.baseIncome * finalMult)} 💰/сек`;
+            updateUI();
         }, 1000);
 
+        // Старт игры
         loadGame();
         switchMeme(gameState.equippedMeme);
+        
+        // Первичный запуск разметки под экран
+        if (window.innerWidth <= 1024) {
+            switchMobileSection('game');
+        }
         updateUI();
     </script>
 </body>
