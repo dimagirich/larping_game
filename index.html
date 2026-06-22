@@ -165,96 +165,68 @@
         .quest-title { font-weight: bold; color: var(--warning-color); margin-bottom: 3px; }
         .quest-progress { color: #28a745; font-weight: bold; }
 
-        /* Мобильный переключатель снизу экрана */
-        .mobile-nav {
-            display: none;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background-color: #1a1a1a;
-            border-top: 2px solid #333;
-            z-index: 100;
-        }
-        .mobile-nav-btn {
-            flex: 1;
-            background: none;
-            border: none;
-            color: #888;
-            padding: 12px;
-            font-weight: bold;
-            font-size: 0.9rem;
-            cursor: pointer;
-            text-align: center;
-        }
-        .mobile-nav-btn.active {
-            color: #fff;
-            background-color: #252525;
-            border-bottom: 3px solid var(--accent-color);
-        }
-
-        /* --- АДАПТИВНОСТЬ ДЛЯ ТЕЛЕФОНОВ (ЭКРАНЫ МЕНЕЕ 1024px) --- */
+        /* --- АДАПТИВНОСТЬ: ВСЕ В ОДНУ ВЕРТИКАЛЬНУЮ ЛИНИЮ НА МАЛЕНЬКИХ ЭКРАНАХ --- */
         @media (max-width: 1024px) {
             body {
                 flex-direction: column;
-                overflow-y: auto;
+                overflow-y: auto; /* Включаем общий вертикальный скролл */
                 height: auto;
-                padding-bottom: 60px; /* Место для нижнего меню */
             }
 
-            .sidebar {
+            /* Игровая зона всегда первая сверху */
+            .game-container {
+                width: 100%;
+                min-height: auto;
+                padding: 20px 10px;
+                order: 1;
+            }
+
+            /* Левая панель с улучшениями идет второй */
+            .sidebar.upgrade-sidebar {
                 width: 100%;
                 height: auto;
                 box-shadow: none;
-                display: none; /* Скрываем по умолчанию, управляется через JS */
-                padding: 15px;
-            }
-            
-            .upgrade-sidebar { border-right: none; border-bottom: 1px solid #333; }
-            .boost-sidebar { border-left: none; border-top: 1px solid #333; }
-
-            .mobile-nav {
-                display: flex;
+                border-right: none;
+                border-bottom: 2px solid #333;
+                border-top: 2px solid #333;
+                order: 2;
+                overflow-y: visible;
             }
 
-            .game-container {
+            /* Правая панель с бустами идет третьей (внизу страницы) */
+            .sidebar.boost-sidebar {
                 width: 100%;
-                min-height: 80vh;
-                padding: 10px;
-                order: -1; /* Карта всегда сверху на мобилках */
+                height: auto;
+                box-shadow: none;
+                border-left: none;
+                order: 3;
+                overflow-y: visible;
+            }
+
+            /* Отключаем внутреннюю прокрутку вкладок, так как крутится вся страница */
+            .tab-content {
+                overflow-y: visible;
+                height: auto;
             }
 
             .meme-card-wrapper {
-                height: 400px; /* Чуть ниже, чтобы влезало на экраны мобильных */
+                height: 420px;
                 margin-top: 50px;
             }
 
             .stats-panel {
-                font-size: 1.6rem;
+                font-size: 1.7rem;
                 top: 10px;
-            }
-            
-            /* Делаем сетку ящиков красивее на мобилках */
-            #tab-memes {
-                display: grid;
-                grid-template-columns: 1fr;
-                gap: 15px;
+                position: relative; /* Чтобы не перекрывала контент при скролле */
+                margin-bottom: 10px;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- МОБИЛЬНОЕ НИЖНЕЕ МЕНЮ -->
-    <div class="mobile-nav">
-        <button class="mobile-nav-btn active" onclick="switchMobileSection('game')">🎮 Игра</button>
-        <button class="mobile-nav-btn" onclick="switchMobileSection('upgrades')">⚡ Улучшения</button>
-        <button class="mobile-nav-btn" onclick="switchMobileSection('memes')">🎒 Рюкзак</button>
-        <button class="mobile-nav-btn" onclick="switchMobileSection('boosts')">🚀 Бусты</button>
-    </div>
-
     <!-- ЛЕВАЯ ПАНЕЛЬ -->
-    <div class="sidebar upgrade-sidebar" id="sidebar-left">
+    <div class="sidebar upgrade-sidebar">
         <div class="tabs-nav">
             <button class="tab-btn active" id="tab-btn-upgrades" onclick="switchTab('upgrades')">Улучшения</button>
             <button class="tab-btn" id="tab-btn-memes" onclick="switchTab('memes')">Магазин & Рюкзак</button>
@@ -323,7 +295,7 @@
     </div>
 
     <!-- ЦЕНТР (ИГРОВАЯ ЗОНА) -->
-    <div class="game-container" id="game-center">
+    <div class="game-container">
         <div class="stats-panel">
             <span class="coin-icon">💰</span>
             <span id="balance-display">0</span>
@@ -342,8 +314,8 @@
         <button class="action-btn stop-btn" id="stop-farm-btn" onclick="stopMemeFarm()">🛑 Остановить фарм</button>
     </div>
 
-    <!-- ПРАВАЯ ПАНЕЛЬ (БУСТЫ) -->
-    <div class="sidebar boost-sidebar" id="sidebar-right">
+    <!-- ПРАВАЯ ПАНЕЛЬ -->
+    <div class="sidebar boost-sidebar">
         <h2>Временные Бусты</h2>
         
         <div class="card-panel">
@@ -521,7 +493,6 @@
             updateUI();
         }
 
-        // Переключение вкладок на ПК версии
         function switchTab(tabId) {
             document.getElementById('tab-btn-upgrades').classList.remove('active');
             document.getElementById('tab-btn-memes').classList.remove('active');
@@ -535,36 +506,6 @@
                 document.getElementById('tab-btn-memes').classList.add('active');
                 document.getElementById('tab-memes').style.display = 'flex';
                 renderInventory();
-            }
-        }
-
-        // Функция логики адаптивного переключения секций для мобильных телефонов
-        function switchMobileSection(section) {
-            document.querySelectorAll('.mobile-nav-btn').forEach(b => b.classList.remove('active'));
-            
-            const sidebarLeft = document.getElementById('sidebar-left');
-            const sidebarRight = document.getElementById('sidebar-right');
-            const gameCenter = document.getElementById('game-center');
-
-            // Сброс видимости для мобильной логики
-            sidebarLeft.style.display = 'none';
-            sidebarRight.style.display = 'none';
-            gameCenter.style.display = 'none';
-
-            // Находим нажатую кнопку по тексту или параметру
-            const btn = Array.from(document.querySelectorAll('.mobile-nav-btn')).find(b => b.getAttribute('onclick').includes(section));
-            if(btn) btn.classList.add('active');
-
-            if (section === 'game') {
-                gameCenter.style.display = 'flex';
-            } else if (section === 'upgrades') {
-                sidebarLeft.style.display = 'flex';
-                switchTab('upgrades');
-            } else if (section === 'memes') {
-                sidebarLeft.style.display = 'flex';
-                switchTab('memes');
-            } else if (section === 'boosts') {
-                sidebarRight.style.display = 'flex';
             }
         }
 
@@ -863,30 +804,12 @@
             }
         }
 
-        // Проверка при ресайзе, чтобы вернуть дефолтный вид для ПК
-        window.addEventListener('resize', () => {
-            if (window.innerWidth > 1024) {
-                document.getElementById('sidebar-left').style.display = 'flex';
-                document.getElementById('sidebar-right').style.display = 'flex';
-                document.getElementById('game-center').style.display = 'flex';
-            } else {
-                // Если перешли на мобильный размер, активируем вкладку игры
-                switchMobileSection('game');
-            }
-        });
-
         setInterval(() => {
             updateUI();
         }, 1000);
 
-        // Старт игры
         loadGame();
         switchMeme(gameState.equippedMeme);
-        
-        // Первичный запуск разметки под экран
-        if (window.innerWidth <= 1024) {
-            switchMobileSection('game');
-        }
         updateUI();
     </script>
 </body>
