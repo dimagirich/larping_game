@@ -161,6 +161,10 @@
 
         .total-stats-panel { background-color: #1a1a1a; padding: 12px; border-radius: 6px; border: 1px dashed #444; font-size: 0.95rem; display: flex; flex-direction: column; gap: 6px; }
         .total-stats-panel div { display: flex; justify-content: space-between; }
+        
+        .promo-btn { background-color: transparent; color: #a8a8a8; border: 1px dashed #555; padding: 5px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; transition: all 0.2s; text-align: center; margin-top: 5px; }
+        .promo-btn:hover { border-color: var(--accent-color); color: white; }
+        
         .reset-btn { background-color: transparent; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 8px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: all 0.2s; text-align: center;}
         .reset-btn:hover { background-color: var(--danger-color); color: white; }
 
@@ -309,6 +313,7 @@
             <div><span>Итоговый доход:</span> <span id="total-cps-val" style="color: var(--success-color); font-weight: bold;">10 💰/сек</span></div>
         </div>
 
+        <button class="promo-btn" onclick="enterPromoCode()">Ввести промокод</button>
         <button class="reset-btn" onclick="resetGame()">Сбросить всё</button>
     </div>
 
@@ -421,7 +426,8 @@
                 Lvl3: { cooldownUntil: 0, quest: null, progress: 0, completed: false }
             },
             ownedMemes: ['sir'],
-            equippedMeme: 'sir'
+            equippedMeme: 'sir',
+            usedPromos: []
         };
 
         let gameState = {};
@@ -469,7 +475,7 @@
         }
 
         function loadGame() {
-            const savedData = localStorage.getItem('excuseMeSir_v13_save');
+            const savedData = localStorage.getItem('excuseMeSir_v14_save');
             if (savedData) {
                 try {
                     gameState = JSON.parse(savedData);
@@ -478,6 +484,7 @@
                     if(!gameState.quests) gameState.quests = JSON.parse(JSON.stringify(defaultState.quests));
                     if(!gameState.ownedMemes) gameState.ownedMemes = ['sir'];
                     if(!gameState.equippedMeme) gameState.equippedMeme = 'sir';
+                    if(!gameState.usedPromos) gameState.usedPromos = [];
                 } catch (e) {
                     gameState = JSON.parse(JSON.stringify(defaultState));
                 }
@@ -491,13 +498,13 @@
         }
 
         function saveGame() {
-            localStorage.setItem('excuseMeSir_v13_save', JSON.stringify(gameState));
+            localStorage.setItem('excuseMeSir_v14_save', JSON.stringify(gameState));
         }
 
         function resetGame() {
             if (confirm("Вы уверены, что хотите полностью стереть прогресс?")) {
                 stopMemeFarm();
-                localStorage.removeItem('excuseMeSir_v13_save');
+                localStorage.removeItem('excuseMeSir_v14_save');
                 gameState = JSON.parse(JSON.stringify(defaultState));
                 initQuest('Lvl1', true);
                 initQuest('Lvl2', true);
@@ -507,6 +514,26 @@
                 renderInventory();
                 renderIndex();
                 statusDisplay.innerText = "Прогресс успешно сброшен!";
+            }
+        }
+
+        function enterPromoCode() {
+            let code = prompt("Введите промокод:");
+            if (code === null) return;
+            
+            let cleanCode = code.trim();
+            if (cleanCode === "Tehnosemya") {
+                if (gameState.usedPromos.includes("Tehnosemya")) {
+                    alert("Этот промокод уже был активирован!");
+                } else {
+                    gameState.coins += 50000;
+                    gameState.usedPromos.push("Tehnosemya");
+                    alert("Промокод успешно активирован! Зачислено 50к монет.");
+                    saveGame();
+                    updateUI();
+                }
+            } else {
+                alert("Неверный промокод!");
             }
         }
 
