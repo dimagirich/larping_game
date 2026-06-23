@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Excuse me sir! - The Game</title>
+    <title>Excuse me sir! - Definitive Edition v2</title>
     <style>
         :root {
             --bg-color: #121212;
@@ -13,6 +13,7 @@
             --warning-color: #ffc107;
             --danger-color: #dc3545;
             --boost-color: #e0a800;
+            --gold-color: #ffd700;
             --text-color: #ffffff;
             --disabled-color: #555555;
             
@@ -21,6 +22,7 @@
             --rarity-rare: #00bcff;
             --rarity-epic: #b100ff;
             --rarity-legendary: #ffaa00;
+            --rarity-mythic: #ff3366;
         }
 
         body {
@@ -35,7 +37,7 @@
         }
 
         .sidebar {
-            width: 320px;
+            width: 340px;
             background-color: var(--panel-color);
             padding: 20px;
             box-shadow: 0 0 10px rgba(0,0,0,0.5);
@@ -60,11 +62,11 @@
             background: #2a2a2a;
             color: #888;
             border: 1px solid #444;
-            padding: 8px 5px;
+            padding: 8px 3px;
             cursor: pointer;
             font-weight: bold;
             border-radius: 5px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             transition: all 0.2s;
         }
         .tab-btn.active {
@@ -102,7 +104,7 @@
         .lvl-badge { background-color: #444; color: #fff; font-size: 0.8rem; padding: 2px 8px; border-radius: 10px; border: 1px solid #555; font-weight: bold; }
         .card-panel p { margin: 0; font-size: 0.9rem; color: #aaa; }
 
-        .action-btn { color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background 0.2s, transform 0.1s; }
+        .action-btn { color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background 0.2s, transform 0.1s; text-align: center;}
         .action-btn:active:not(:disabled) { transform: scale(0.98); }
         .upgrade-btn { background-color: var(--accent-color); }
         .upgrade-btn:hover:not(:disabled) { background-color: #0056b3; }
@@ -113,6 +115,7 @@
         .box-panel { border: 2px solid #5c3a21; text-align: center; margin-bottom: 5px; }
         .box-wood { background: linear-gradient(135deg, #3a2618, #23160e); border-color: #5c3a21; }
         .box-iron { background: linear-gradient(135deg, #2c3e50, #1a252f); border-color: #7f8c8d; }
+        .box-gold { background: linear-gradient(135deg, #5c4d18, #2e2509); border-color: var(--gold-color); }
         
         .box-anim-container { font-size: 3rem; margin: 5px 0; cursor: pointer; transition: transform 0.1s; display: inline-block;}
         .box-anim-container.shake { animation: shake 0.4s ease-in-out; }
@@ -125,7 +128,7 @@
         .inventory-grid { display: flex; flex-direction: column; gap: 8px; }
         .inv-item { display: flex; align-items: center; justify-content: space-between; padding: 10px; border-radius: 6px; background: #1f1f1f; border-left: 4px solid #fff; gap: 10px; }
         .inv-item.equipped { background: #1a271d; border-right: 2px solid var(--success-color); }
-        .inv-img-preview { width: 32px; height: 32px; object-fit: cover; border-radius: 4px; border: 1px solid #444; background: #000; }
+        .inv-img-preview { width: 40px; height: 40px; object-fit: cover; border-radius: 4px; border: 1px solid #444; background: #000; }
         .inv-info { display: flex; flex-direction: column; gap: 2px; flex: 1; }
         .inv-title-line { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
         .inv-name { font-weight: bold; font-size: 0.95rem; }
@@ -134,9 +137,31 @@
         .equip-btn { padding: 6px 12px; font-size: 0.8rem; background: #444; border: none; color: white; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .equip-btn.eq { background: var(--success-color); }
 
+        /* Стили Индекса */
+        .index-menu-bar { display: flex; gap: 5px; margin-bottom: 10px; }
+        .index-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .index-card { background: #1a1a1a; border: 1px solid #333; border-radius: 6px; padding: 8px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 4px; position: relative; }
+        .index-card.owned { border-color: var(--success-color); background: #162419; }
+        .index-card img { width: 100%; height: 80px; object-fit: cover; border-radius: 4px; background: #000; }
+        .index-card-title { font-size: 0.85rem; font-weight: bold; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; }
+        .index-card-mult { font-size: 0.75rem; color: var(--gold-color); font-weight: bold; }
+        .index-status-tag { font-size: 0.7rem; font-weight: bold; padding: 2px 6px; border-radius: 4px; margin-top: 4px; }
+        .index-status-tag.have { background: rgba(40, 167, 69, 0.2); color: #2ecc71; }
+        .index-status-tag.not-have { background: rgba(255,255,255,0.05); color: #777; }
+
+        /* Зелья */
+        .potion-shelf { display: flex; gap: 10px; margin-bottom: 10px; background: #1a1a1a; padding: 10px; border-radius: 6px; border: 1px solid #333; }
+        .potion-slot { flex: 1; text-align: center; position: relative; background: #252525; padding: 8px; border-radius: 6px; border: 1px dashed #444; }
+        .potion-icon { font-size: 1.8rem; line-height: 1; margin-bottom: 4px; }
+        .potion-count { position: absolute; top: 4px; right: 6px; background: var(--accent-color); color: white; font-size: 0.7rem; font-weight: bold; padding: 1px 5px; border-radius: 10px; }
+        .potion-title { font-size: 0.75rem; font-weight: bold; color: #ccc; margin-bottom: 5px;}
+        .use-potion-btn { width: 100%; font-size: 0.75rem; padding: 4px; background: #444; border: none; color: white; border-radius: 4px; cursor: pointer; }
+        .use-potion-btn:hover:not(:disabled) { background: var(--success-color); }
+        .potion-active-timer { font-size: 0.75rem; color: var(--success-color); font-weight: bold; }
+
         .total-stats-panel { background-color: #1a1a1a; padding: 12px; border-radius: 6px; border: 1px dashed #444; font-size: 0.95rem; display: flex; flex-direction: column; gap: 6px; }
         .total-stats-panel div { display: flex; justify-content: space-between; }
-        .reset-btn { background-color: transparent; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 8px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: all 0.2s; }
+        .reset-btn { background-color: transparent; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 8px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: all 0.2s; text-align: center;}
         .reset-btn:hover { background-color: var(--danger-color); color: white; }
 
         .game-container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; padding: 20px; gap: 15px; box-sizing: border-box; min-width: 0; }
@@ -156,70 +181,25 @@
         .meme-card-wrapper.cooldown .cooldown-progress { background-color: var(--warning-color); }
         
         .status-text { font-size: 1rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); text-align: center; min-height: 24px; padding: 0 10px; }
-        .timer-text { font-size: 0.85rem; font-weight: bold; color: var(--warning-color); }
+        .timer-text { font-size: 0.85rem; font-weight: bold; color: var(--warning-color); text-align: center; display: block; margin-top: 2px;}
 
         .stop-btn { background-color: var(--danger-color); padding: 12px 24px; font-size: 1rem; box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4); display: none; }
         .stop-btn:hover { background-color: #bd2130; }
 
         .quest-box { font-size: 0.85rem; border: 1px dashed #555; padding: 8px; border-radius: 6px; background: #1a1a1a; margin-top: 5px; text-align: left; }
         .quest-title { font-weight: bold; color: var(--warning-color); margin-bottom: 3px; }
+        .quest-reward { font-size: 0.75rem; color: #00bcff; font-weight: bold; margin-top: 4px; display: flex; align-items: center; gap: 4px; }
         .quest-progress { color: #28a745; font-weight: bold; }
 
-        /* --- АДАПТИВНОСТЬ: ВСЕ В ОДНУ ВЕРТИКАЛЬНУЮ ЛИНИЮ НА МАЛЕНЬКИХ ЭКРАНАХ --- */
+        /* Адаптивность для телефонов */
         @media (max-width: 1024px) {
-            body {
-                flex-direction: column;
-                overflow-y: auto; /* Включаем общий вертикальный скролл */
-                height: auto;
-            }
-
-            /* Игровая зона всегда первая сверху */
-            .game-container {
-                width: 100%;
-                min-height: auto;
-                padding: 20px 10px;
-                order: 1;
-            }
-
-            /* Левая панель с улучшениями идет второй */
-            .sidebar.upgrade-sidebar {
-                width: 100%;
-                height: auto;
-                box-shadow: none;
-                border-right: none;
-                border-bottom: 2px solid #333;
-                border-top: 2px solid #333;
-                order: 2;
-                overflow-y: visible;
-            }
-
-            /* Правая панель с бустами идет третьей (внизу страницы) */
-            .sidebar.boost-sidebar {
-                width: 100%;
-                height: auto;
-                box-shadow: none;
-                border-left: none;
-                order: 3;
-                overflow-y: visible;
-            }
-
-            /* Отключаем внутреннюю прокрутку вкладок, так как крутится вся страница */
-            .tab-content {
-                overflow-y: visible;
-                height: auto;
-            }
-
-            .meme-card-wrapper {
-                height: 420px;
-                margin-top: 50px;
-            }
-
-            .stats-panel {
-                font-size: 1.7rem;
-                top: 10px;
-                position: relative; /* Чтобы не перекрывала контент при скролле */
-                margin-bottom: 10px;
-            }
+            body { flex-direction: column; overflow-y: auto; height: auto; }
+            .game-container { width: 100%; min-height: auto; padding: 20px 10px; order: 1; }
+            .sidebar.upgrade-sidebar { width: 100%; height: auto; box-shadow: none; border-right: none; border-bottom: 2px solid #333; border-top: 2px solid #333; order: 2; overflow-y: visible; }
+            .sidebar.boost-sidebar { width: 100%; height: auto; box-shadow: none; border-left: none; order: 3; overflow-y: visible; }
+            .tab-content { overflow-y: visible; height: auto; }
+            .meme-card-wrapper { height: 420px; margin-top: 50px; }
+            .stats-panel { font-size: 1.7rem; top: 10px; position: relative; margin-bottom: 10px; }
         }
     </style>
 </head>
@@ -229,10 +209,10 @@
     <div class="sidebar upgrade-sidebar">
         <div class="tabs-nav">
             <button class="tab-btn active" id="tab-btn-upgrades" onclick="switchTab('upgrades')">Улучшения</button>
-            <button class="tab-btn" id="tab-btn-memes" onclick="switchTab('memes')">Магазин & Рюкзак</button>
+            <button class="tab-btn" id="tab-btn-memes" onclick="switchTab('memes')">Рюкзак & Ферма</button>
         </div>
 
-        <!-- ВКЛАДКА 1 -->
+        <!-- ВКЛАДКА 1: УЛУЧШЕНИЯ -->
         <div id="tab-upgrades" class="tab-content">
             <div class="card-panel">
                 <div class="card-header">
@@ -260,33 +240,71 @@
                     <span class="lvl-badge" id="up3-lvl">Ур. 0</span>
                 </div>
                 <p>Перезарядка: <span id="cooldown-val">10</span> сек</p>
-                <p>Цена: <span id="up3-cost">5000</span> монет</p>
+                <p>Цена: <span id="up3-cost">5к</span> монет</p>
                 <button class="action-btn upgrade-btn" id="up3-btn" onclick="buyCooldown()">Уменьшить (-0.5с)</button>
             </div>
         </div>
 
-        <!-- ВКЛАДКА 2 -->
+        <!-- ВКЛАДКА 2: РЮКЗАК / МАГАЗИН ЯЩИКОВ -->
         <div id="tab-memes" class="tab-content" style="display: none;">
-            <div class="card-panel box-panel box-wood">
-                <h3>Деревянный ящик</h3>
-                <p>Цена: <span style="color: #ffd700; font-weight:bold;">5000 монет</span></p>
-                <div class="box-anim-container" id="box-wood-emoji" onclick="openMemeBox('wood')">📦</div>
-                <button class="action-btn upgrade-btn" id="buy-wood-btn" onclick="openMemeBox('wood')" style="background:#5c3a21; padding: 6px;">Открыть</button>
+            <div class="index-menu-bar">
+                <button class="tab-btn active" id="subtab-btn-inv" onclick="switchSubTab('inv')">Магазин и Сумка</button>
+                <button class="tab-btn" id="subtab-btn-index" onclick="switchSubTab('index')">📖 Индекс Мемов</button>
             </div>
 
-            <div class="card-panel box-panel box-iron">
-                <h3>Железный ящик</h3>
-                <p>Цена: <span style="color: #ffd700; font-weight:bold;">50000 монет</span></p>
-                <div class="box-anim-container" id="box-iron-emoji" onclick="openMemeBox('iron')">🧳</div>
-                <button class="action-btn upgrade-btn" id="buy-iron-btn" onclick="openMemeBox('iron')" style="background:#4f5d73; padding: 6px;">Открыть</button>
+            <div id="subtab-inv" style="display: flex; flex-direction: column; gap:15px;">
+                <div class="card-panel box-panel box-wood">
+                    <h3>Деревянный ящик</h3>
+                    <p>Цена: <span style="color: #ffd700; font-weight:bold;">5к монет</span></p>
+                    <div class="box-anim-container" id="box-wood-emoji" onclick="openMemeBox('wood')">📦</div>
+                    <button class="action-btn upgrade-btn" id="buy-wood-btn" onclick="openMemeBox('wood')" style="background:#5c3a21; padding: 6px;">Открыть</button>
+                </div>
+
+                <div class="card-panel box-panel box-iron">
+                    <h3>Железный ящик</h3>
+                    <p>Цена: <span style="color: #ffd700; font-weight:bold;">50к монет</span></p>
+                    <div class="box-anim-container" id="box-iron-emoji" onclick="openMemeBox('iron')">🧳</div>
+                    <button class="action-btn upgrade-btn" id="buy-iron-btn" onclick="openMemeBox('iron')" style="background:#4f5d73; padding: 6px;">Открыть</button>
+                </div>
+
+                <div class="card-panel box-panel box-gold">
+                    <h3>👑 Золотой ящик 👑</h3>
+                    <p>Цена: <span style="color: #ffd700; font-weight:bold;">500к монет</span></p>
+                    <div class="box-anim-container" id="box-gold-emoji" onclick="openMemeBox('gold')">🔱</div>
+                    <button class="action-btn upgrade-btn" id="buy-gold-btn" onclick="openMemeBox('gold')" style="background:#b8910d; padding: 6px; color:#000;">Открыть</button>
+                </div>
+
+                <h3>🧪 Полка с Зельями</h3>
+                <div class="potion-shelf">
+                    <div class="potion-slot">
+                        <div class="potion-count" id="pot-luck-count">0</div>
+                        <div class="potion-icon">🧪</div>
+                        <div class="potion-title">Зелье Удачи</div>
+                        <button class="use-potion-btn" id="pot-luck-btn" onclick="usePotion('luck')">Пить</button>
+                        <div class="potion-active-timer" id="pot-luck-timer"></div>
+                    </div>
+                    <div class="potion-slot">
+                        <div class="potion-count" id="pot-mult-count">0</div>
+                        <div class="potion-icon">🧪</div>
+                        <div class="potion-title">Зелье Силы</div>
+                        <button class="use-potion-btn" id="pot-mult-btn" onclick="usePotion('mult')">Пить</button>
+                        <div class="potion-active-timer" id="pot-mult-timer"></div>
+                    </div>
+                </div>
+
+                <h3>Рюкзак (Мемы)</h3>
+                <div class="inventory-grid" id="inventory-display"></div>
             </div>
 
-            <h3>Рюкзак (Мемы)</h3>
-            <div class="inventory-grid" id="inventory-display"></div>
+            <div id="subtab-index" style="display: none;">
+                <h3>Все мемы игры</h3>
+                <div class="index-grid" id="index-display"></div>
+            </div>
         </div>
 
         <div class="total-stats-panel">
-            <div><span>Выбранный мем:</span> <span id="active-meme-name" style="font-weight: bold; color: var(--rarity-common);">Excuse me sir!</span></div>
+            <div><span>Мем в руках:</span> <span id="active-meme-name" style="font-weight: bold; color: var(--rarity-common);">Excuse me sir!</span></div>
+            <div><span>Удача дропа:</span> <span id="total-luck-display" style="color: #00bcff; font-weight: bold;">100%</span></div>
             <div><span>Общий множитель:</span> <span id="total-mult-val" style="color: #ffd700; font-weight: bold;">x1.0</span></div>
             <div><span>Итоговый доход:</span> <span id="total-cps-val" style="color: var(--success-color); font-weight: bold;">10 💰/сек</span></div>
         </div>
@@ -302,8 +320,8 @@
         </div>
 
         <div class="meme-card-wrapper" id="meme-card" onclick="activateMeme()">
-            <img src="meme.jpg" alt="Meme" class="card-preview" id="card-img">
-            <video src="meme.mp4" class="card-video" id="card-vid" loop muted playsinline></video>
+            <img src="sir.jpg" alt="Meme" class="card-preview" id="card-img" onerror="this.src='https://placehold.co/330x480/2a2a2a/ffffff?text=Meme+Image'">
+            <video src="sir.mp4" class="card-video" id="card-vid" loop muted playsinline></video>
             
             <div class="cooldown-overlay">
                 <div class="cooldown-progress" id="progress-bar"></div>
@@ -314,60 +332,77 @@
         <button class="action-btn stop-btn" id="stop-farm-btn" onclick="stopMemeFarm()">🛑 Остановить фарм</button>
     </div>
 
-    <!-- ПРАВАЯ ПАНЕЛЬ -->
+    <!-- ПРАВАЯ ПАНЕЛЬ (КВЕСТЫ) -->
     <div class="sidebar boost-sidebar">
-        <h2>Временные Бусты</h2>
+        <h2>Задания и Квесты</h2>
         
         <div class="card-panel">
-            <h3>Умножение доходов X2</h3>
-            <p>Длительность: 5 мин | Перезарядка: 5 мин</p>
-            <div class="quest-box" id="questX2-box">
-                <div class="quest-title" id="questX2-title">Загрузка квеста...</div>
-                <div>Прогресс: <span class="quest-progress" id="questX2-prog">0/0</span></div>
+            <h3>Поручение: Легкое</h3>
+            <div class="quest-box" id="questLvl1-box">
+                <div class="quest-title" id="questLvl1-title">Загрузка...</div>
+                <div>Прогресс: <span class="quest-progress" id="questLvl1-prog">0/0</span></div>
+                <div class="quest-reward">Награда: <span id="questLvl1-rew">...</span></div>
             </div>
-            <span id="boostX2-status" class="timer-text"></span>
-            <button class="action-btn boost-btn" id="boostX2-btn" onclick="claimBoost('X2')">Активировать Буст</button>
+            <span id="boostLvl1-status" class="timer-text"></span>
+            <button class="action-btn boost-btn" id="boostLvl1-btn" onclick="claimQuest('Lvl1')">Забрать Награду</button>
         </div>
 
         <div class="card-panel">
-            <h3>Мега Умножение X5</h3>
-            <p>Длительность: 5 мин | Перезарядка: 15 мин</p>
-            <div class="quest-box" id="questX5-box">
-                <div class="quest-title" id="questX5-title">Загрузка квеста...</div>
-                <div>Прогресс: <span class="quest-progress" id="questX5-prog">0/0</span></div>
+            <h3>Контракт: Средний</h3>
+            <div class="quest-box" id="questLvl2-box">
+                <div class="quest-title" id="questLvl2-title">Загрузка...</div>
+                <div>Прогресс: <span class="quest-progress" id="questLvl2-prog">0/0</span></div>
+                <div class="quest-reward">Награда: <span id="questLvl2-rew">...</span></div>
             </div>
-            <span id="boostX5-status" class="timer-text"></span>
-            <button class="action-btn boost-btn" id="boostX5-btn" onclick="claimBoost('X5')">Активировать Буст</button>
+            <span id="boostLvl2-status" class="timer-text"></span>
+            <button class="action-btn boost-btn" id="boostLvl2-btn" onclick="claimQuest('Lvl2')">Забрать Награду</button>
+        </div>
+
+        <div class="card-panel">
+            <h3>Испытание: Сложное</h3>
+            <div class="quest-box" id="questLvl3-box">
+                <div class="quest-title" id="questLvl3-title">Загрузка...</div>
+                <div>Прогресс: <span class="quest-progress" id="questLvl3-prog">0/0</span></div>
+                <div class="quest-reward">Награда: <span id="questLvl3-rew">...</span></div>
+            </div>
+            <span id="boostLvl3-status" class="timer-text"></span>
+            <button class="action-btn boost-btn" id="boostLvl3-btn" onclick="claimQuest('Lvl3')">Забрать Награду</button>
         </div>
     </div>
 
     <script>
         const MEME_REGISTRY = {
-            'sir': { id: 'sir', name: 'Excuse me sir!', mult: 1.0, rarity: 'Базовый', color: 'var(--rarity-common)', img: 'meme.jpg', vid: 'meme.mp4' },
-            'wobble': { id: 'wobble', name: 'Wobble', mult: 1.5, rarity: 'Обычный', color: 'rgba(255,255,255,0.7)', img: 'wobble.jpg', vid: 'wobble.mp4' },
-            'meow': { id: 'meow', name: 'Meow', mult: 1.8, rarity: 'Обычный', color: 'rgba(255,255,255,0.7)', img: 'meow.jpg', vid: 'meow.mp4' },
-            'giga': { id: 'giga', name: 'Gigachad', mult: 3.5, rarity: 'Редкий', color: 'var(--rarity-rare)', img: 'giga.jpg', vid: 'giga.mp4' },
-            'pedro': { id: 'pedro', name: 'Pedro Racoon', mult: 6.0, rarity: 'Эпический', color: 'var(--rarity-epic)', img: 'pedro.jpg', vid: 'pedro.mp4' },
-            'congr': { id: 'congr', name: 'Congregation', mult: 20.0, rarity: 'Легендарный', color: 'var(--rarity-legendary)', img: 'congr.jpg', vid: 'congr.mp4' },
+            'sir': { id: 'sir', name: 'Excuse me sir!', mult: 1.0, rarity: 'Базовый', color: 'var(--rarity-common)' },
+            'wobble': { id: 'wobble', name: 'Wobble Cat', mult: 2.5, rarity: 'Обычный', color: '#aaaaaa' },
+            'meow': { id: 'meow', name: 'Pop Cat Meow', mult: 4.0, rarity: 'Обычный', color: '#aaaaaa' },
+            'giga': { id: 'giga', name: 'Gigachad Click', mult: 12.0, rarity: 'Редкий', color: 'var(--rarity-rare)' },
+            'pedro': { id: 'pedro', name: 'Pedro Raccoon', mult: 25.0, rarity: 'Эпический', color: 'var(--rarity-epic)' },
+            'congr': { id: 'congr', name: 'Congregation', mult: 50.0, rarity: 'Легендарный', color: 'var(--rarity-legendary)' },
             
-            // Железный ящик
-            'congr_iron': { id: 'congr_iron', name: 'Congregation (Iron)', mult: 20.0, rarity: 'Обычный', color: 'rgba(255,255,255,0.7)', img: 'congr.jpg', vid: 'congr.mp4' },
-            'tung': { id: 'tung', name: 'Tung tung tung angel', mult: 25.0, rarity: 'Обычный', color: '#1abc9c', img: 'tung.jpg', vid: 'tung.mp4' },
-            'nectar': { id: 'nectar', name: 'Nectaryinki', mult: 35.0, rarity: 'Редкий', color: 'var(--rarity-rare)', img: 'nectar.jpg', vid: 'nectar.mp4' },
-            'sahur': { id: 'sahur', name: 'Last sahur', mult: 45.0, rarity: 'Эпический', color: 'var(--rarity-epic)', img: 'sahur.jpg', vid: 'sahur.mp4' },
-            'sigma': { id: 'sigma', name: 'Sigma Cat', mult: 75.0, rarity: 'Легендарный', color: 'var(--rarity-legendary)', img: 'sigma.jpg', vid: 'sigma.mp4' }
+            // Золотой ящик
+            'ladder': { id: 'ladder', name: 'Лестница', mult: 80.0, rarity: 'Обычный', color: '#bfbfbf' },
+            'cow': { id: 'cow', name: 'Польская корова', mult: 110.0, rarity: 'Редкий', color: 'var(--rarity-rare)' },
+            'cheremsha': { id: 'cheremsha', name: 'Черемша', mult: 150.0, rarity: 'Эпический', color: 'var(--rarity-epic)' },
+            'ai': { id: 'ai', name: 'Искусственный Интеллект', mult: 200.0, rarity: 'Легендарный', color: 'var(--rarity-legendary)' },
+            'mellstroy': { id: 'mellstroy', name: 'Мелстройность', mult: 350.0, rarity: 'Мифический', color: 'var(--rarity-mythic)' }
         };
 
+        // ТРИ ВАРИАЦИИ квестов на каждую сложность
         const QUEST_POOLS = {
-            'X2': [
-                { id: 'coins', text: 'Заработать за сессию монет: ', target: 10000 },
-                { id: 'activations', text: 'Активировать мемы раз: ', target: 8 },
-                { id: 'open_box', text: 'Открыть любой ящик раз: ', target: 1 }
+            'Lvl1': [
+                { id: 'coins', text: 'Собрать монет: ', target: 3000, reward: { type: 'pot_mult', count: 1, text: '🧪 1 Зелье Силы' } },
+                { id: 'activations', text: 'Активировать мемы: ', target: 5, reward: { type: 'pot_luck', count: 1, text: '🧪 1 Зелье Удачи' } },
+                { id: 'spend', text: 'Потратить на улучшения: ', target: 500, reward: { type: 'pot_mult', count: 1, text: '🧪 1 Зелье Силы' } }
             ],
-            'X5': [
-                { id: 'coins', text: 'Заработать за сессию монет: ', target: 50000 },
-                { id: 'activations', text: 'Активировать мемы раз: ', target: 25 },
-                { id: 'spend', text: 'Потратить на улучшения монет: ', target: 15000 }
+            'Lvl2': [
+                { id: 'spend', text: 'Потратить на прокачку: ', target: 15000, reward: { type: 'pot_mult', count: 2, text: '🧪 2 Зелья Силы' } },
+                { id: 'open_box', text: 'Открыть любых ящиков: ', target: 3, reward: { type: 'pot_luck', count: 2, text: '🧪 2 Зелья Удачи' } },
+                { id: 'activations', text: 'Активировать мемы: ', target: 15, reward: { type: 'pot_mult', count: 2, text: '🧪 2 Зелья Силы' } }
+            ],
+            'Lvl3': [
+                { id: 'open_gold_box', text: 'Открыть ЗОЛОТЫХ ящиков: ', target: 5, reward: { type: 'pot_luck', count: 5, text: '🧪 5 Зелий Удачи' } },
+                { id: 'coins', text: 'Собрать монет на ферме: ', target: 1000000, reward: { type: 'pot_mult', count: 5, text: '🧪 5 Зелий Силы' } },
+                { id: 'spend', text: 'Вложить в апгрейды: ', target: 600000, reward: { type: 'pot_luck', count: 4, text: '🧪 4 Зелья Удачи' } }
             ]
         };
 
@@ -378,9 +413,12 @@
             cooldown: 10,
             costs: { multiplier: 100, duration: 100, cooldown: 5000 },
             levels: { multiplier: 1, duration: 0, cooldown: 0 },
-            boosts: {
-                X2: { activeUntil: 0, cooldownUntil: 0, quest: null, progress: 0, completed: false },
-                X5: { activeUntil: 0, cooldownUntil: 0, quest: null, progress: 0, completed: false }
+            potions: { luck: 0, mult: 0 },
+            activePotions: { luckUntil: 0, multUntil: 0 },
+            quests: {
+                Lvl1: { cooldownUntil: 0, quest: null, progress: 0, completed: false },
+                Lvl2: { cooldownUntil: 0, quest: null, progress: 0, completed: false },
+                Lvl3: { cooldownUntil: 0, quest: null, progress: 0, completed: false }
             },
             ownedMemes: ['sir'],
             equippedMeme: 'sir'
@@ -412,83 +450,121 @@
         const totalCpsVal = document.getElementById('total-cps-val');
         const activeMemeName = document.getElementById('active-meme-name');
         const inventoryDisplay = document.getElementById('inventory-display');
+        const indexDisplay = document.getElementById('index-display');
+
+        // Функция сокращения больших чисел (1000 -> 1к, 1000000 -> 1М)
+        function formatNumbers(num) {
+            if (num === null || num === undefined || isNaN(num)) return "0";
+            let rounded = Math.floor(num);
+            if (rounded >= 1000000000) {
+                return (rounded / 1000000000).toFixed(1).replace(/\.0$/, '') + 'Б';
+            }
+            if (rounded >= 1000000) {
+                return (rounded / 1000000).toFixed(1).replace(/\.0$/, '') + 'М';
+            }
+            if (rounded >= 1000) {
+                return (rounded / 1000).toFixed(1).replace(/\.0$/, '') + 'к';
+            }
+            return rounded.toString();
+        }
 
         function loadGame() {
-            const savedData = localStorage.getItem('excuseMeSir_v11_save');
+            const savedData = localStorage.getItem('excuseMeSir_v13_save');
             if (savedData) {
                 try {
                     gameState = JSON.parse(savedData);
-                    if(!gameState.boosts) gameState.boosts = JSON.parse(JSON.stringify(defaultState.boosts));
-                    if(!gameState.levels) gameState.levels = JSON.parse(JSON.stringify(defaultState.levels));
+                    if(!gameState.potions) gameState.potions = { luck: 0, mult: 0 };
+                    if(!gameState.activePotions) gameState.activePotions = { luckUntil: 0, multUntil: 0 };
+                    if(!gameState.quests) gameState.quests = JSON.parse(JSON.stringify(defaultState.quests));
                     if(!gameState.ownedMemes) gameState.ownedMemes = ['sir'];
                     if(!gameState.equippedMeme) gameState.equippedMeme = 'sir';
-                    if(!gameState.costs) gameState.costs = JSON.parse(JSON.stringify(defaultState.costs));
                 } catch (e) {
                     gameState = JSON.parse(JSON.stringify(defaultState));
                 }
             } else {
                 gameState = JSON.parse(JSON.stringify(defaultState));
             }
-            initQuest('X2');
-            initQuest('X5');
+            
+            initQuest('Lvl1');
+            initQuest('Lvl2');
+            initQuest('Lvl3');
         }
 
         function saveGame() {
-            localStorage.setItem('excuseMeSir_v11_save', JSON.stringify(gameState));
+            localStorage.setItem('excuseMeSir_v13_save', JSON.stringify(gameState));
         }
 
         function resetGame() {
-            if (confirm("Вы уверены, что хотите обнулить прогресс?")) {
+            if (confirm("Вы уверены, что хотите полностью стереть прогресс?")) {
                 stopMemeFarm();
-                localStorage.removeItem('excuseMeSir_v11_save');
+                localStorage.removeItem('excuseMeSir_v13_save');
                 gameState = JSON.parse(JSON.stringify(defaultState));
-                initQuest('X2', true);
-                initQuest('X5', true);
+                initQuest('Lvl1', true);
+                initQuest('Lvl2', true);
+                initQuest('Lvl3', true);
                 switchMeme(gameState.equippedMeme);
                 updateUI();
-                statusDisplay.innerText = "Прогресс сброшен!";
+                renderInventory();
+                renderIndex();
+                statusDisplay.innerText = "Прогресс успешно сброшен!";
             }
         }
 
         function initQuest(type, forceNew = false) {
-            if (!gameState.boosts[type].quest || forceNew) {
-                const pool = QUEST_POOLS[type];
+            let qData = gameState.quests[type];
+            const pool = QUEST_POOLS[type];
+            let isValid = qData && qData.quest && pool.some(q => q.id === qData.quest.id);
+
+            if (!isValid || forceNew) {
                 const randomQuest = pool[Math.floor(Math.random() * pool.length)];
-                gameState.boosts[type].quest = { ...randomQuest };
-                gameState.boosts[type].progress = 0;
-                gameState.boosts[type].completed = false;
+                gameState.quests[type].quest = { ...randomQuest };
+                gameState.quests[type].progress = 0;
+                gameState.quests[type].completed = false;
             }
         }
 
         function updateQuestProgress(actionId, value) {
-            ['X2', 'X5'].forEach(type => {
-                let bData = gameState.boosts[type];
+            ['Lvl1', 'Lvl2', 'Lvl3'].forEach(type => {
+                let qData = gameState.quests[type];
                 const now = Date.now();
-                if (!bData.completed && now > bData.activeUntil && now > bData.cooldownUntil) {
-                    if (bData.quest && bData.quest.id === actionId) {
-                        bData.progress += value;
-                        if (bData.progress >= bData.quest.target) {
-                            bData.progress = bData.quest.target;
-                            bData.completed = true;
+                if (!qData.completed && now > qData.cooldownUntil) {
+                    if (qData.quest && qData.quest.id === actionId) {
+                        qData.progress += value;
+                        if (qData.progress >= qData.quest.target) {
+                            qData.progress = qData.quest.target;
+                            qData.completed = true;
                         }
                     }
                 }
             });
         }
 
-        function claimBoost(type) {
+        function claimQuest(type) {
             const now = Date.now();
-            let bData = gameState.boosts[type];
-            if (!bData.completed) return;
+            let qData = gameState.quests[type];
+            if (!qData.completed) return;
 
-            let durationMs = 5 * 60 * 1000;
-            let cdMs = (type === 'X2') ? (5 * 60 * 1000) : (15 * 60 * 1000);
+            const rew = qData.quest.reward;
+            if (rew.type === 'pot_luck') gameState.potions.luck += rew.count;
+            if (rew.type === 'pot_mult') gameState.potions.mult += rew.count;
 
-            bData.activeUntil = now + durationMs;
-            bData.cooldownUntil = now + durationMs + cdMs;
-            bData.completed = false;
+            qData.cooldownUntil = now + 10 * 1000; // 10 секунд до нового квеста
+            qData.completed = false;
             
             initQuest(type, true);
+            saveGame();
+            updateUI();
+        }
+
+        function usePotion(type) {
+            const now = Date.now();
+            if (type === 'luck' && gameState.potions.luck > 0) {
+                gameState.potions.luck--;
+                gameState.activePotions.luckUntil = Math.max(gameState.activePotions.luckUntil, now) + 3 * 60 * 1000;
+            } else if (type === 'mult' && gameState.potions.mult > 0) {
+                gameState.potions.mult--;
+                gameState.activePotions.multUntil = Math.max(gameState.activePotions.multUntil, now) + 3 * 60 * 1000;
+            }
             saveGame();
             updateUI();
         }
@@ -506,6 +582,24 @@
                 document.getElementById('tab-btn-memes').classList.add('active');
                 document.getElementById('tab-memes').style.display = 'flex';
                 renderInventory();
+                renderIndex();
+            }
+        }
+
+        function switchSubTab(subTabId) {
+            document.getElementById('subtab-btn-inv').classList.remove('active');
+            document.getElementById('subtab-btn-index').classList.remove('active');
+            document.getElementById('subtab-inv').style.display = 'none';
+            document.getElementById('subtab-index').style.display = 'none';
+
+            if (subTabId === 'inv') {
+                document.getElementById('subtab-btn-inv').classList.add('active');
+                document.getElementById('subtab-inv').style.display = 'flex';
+                renderInventory();
+            } else {
+                document.getElementById('subtab-btn-index').classList.add('active');
+                document.getElementById('subtab-index').style.display = 'block';
+                renderIndex();
             }
         }
 
@@ -514,33 +608,35 @@
             return 1 + (lvl - 1) * 0.50 + Math.pow(lvl - 1, 1.5) * 0.15;
         }
 
-        function getTempMultiplier() {
-            let mult = 1;
+        function getPotionMultiplier() {
             const now = Date.now();
-            if (gameState.boosts.X2.activeUntil > now) mult *= 2;
-            if (gameState.boosts.X5.activeUntil > now) mult *= 5;
-            return mult;
+            return (gameState.activePotions.multUntil > now) ? 1.5 : 1.0;
+        }
+
+        function getPotionLuck() {
+            const now = Date.now();
+            return (gameState.activePotions.luckUntil > now) ? 1.5 : 1.0;
         }
 
         function getFinalMultiplier() {
             const currentMemeData = MEME_REGISTRY[gameState.equippedMeme] || MEME_REGISTRY['sir'];
-            return currentMemeData.mult * getUpgradeMultiplier() * getTempMultiplier();
+            return currentMemeData.mult * getUpgradeMultiplier() * getPotionMultiplier();
         }
 
         function updateUI() {
-            balanceDisplay.innerText = Math.floor(gameState.coins);
+            balanceDisplay.innerText = formatNumbers(gameState.coins);
             multUpgradeVal.innerText = `x${getUpgradeMultiplier().toFixed(2)}`;
             durationVal.innerText = gameState.duration;
             cooldownVal.innerText = gameState.cooldown.toFixed(1);
             
-            up1Cost.innerText = gameState.costs.multiplier;
-            up2Cost.innerText = gameState.costs.duration;
+            up1Cost.innerText = formatNumbers(gameState.costs.multiplier);
+            up2Cost.innerText = formatNumbers(gameState.costs.duration);
             
             if(gameState.cooldown <= 1.0) {
                 up3Cost.innerText = "МАКСИМУМ";
                 document.getElementById('up3-btn').disabled = true;
             } else {
-                up3Cost.innerText = gameState.costs.cooldown;
+                up3Cost.innerText = formatNumbers(gameState.costs.cooldown);
                 document.getElementById('up3-btn').disabled = gameState.coins < gameState.costs.cooldown;
             }
 
@@ -553,53 +649,66 @@
             
             document.getElementById('buy-wood-btn').disabled = gameState.coins < 5000;   
             document.getElementById('buy-iron-btn').disabled = gameState.coins < 50000;  
+            document.getElementById('buy-gold-btn').disabled = gameState.coins < 500000;  
+
+            document.getElementById('pot-luck-count').innerText = gameState.potions.luck;
+            document.getElementById('pot-mult-count').innerText = gameState.potions.mult;
+            document.getElementById('pot-luck-btn').disabled = gameState.potions.luck <= 0;
+            document.getElementById('pot-mult-btn').disabled = gameState.potions.mult <= 0;
+
+            const now = Date.now();
+            if (gameState.activePotions.luckUntil > now) {
+                document.getElementById('pot-luck-timer').innerText = formatTime(Math.ceil((gameState.activePotions.luckUntil - now)/1000));
+            } else { document.getElementById('pot-luck-timer').innerText = ''; }
+
+            if (gameState.activePotions.multUntil > now) {
+                document.getElementById('pot-mult-timer').innerText = formatTime(Math.ceil((gameState.activePotions.multUntil - now)/1000));
+            } else { document.getElementById('pot-mult-timer').innerText = ''; }
 
             const currentMeme = MEME_REGISTRY[gameState.equippedMeme];
             activeMemeName.innerText = currentMeme.name;
             activeMemeName.style.color = currentMeme.color;
             
+            document.getElementById('total-luck-display').innerText = `${Math.floor(getPotionLuck() * 100)}%`;
+
             let finalMult = getFinalMultiplier();
             totalMultVal.innerText = `x${finalMult.toFixed(2)}`;
-            totalCpsVal.innerText = `${Math.floor(gameState.baseIncome * finalMult)} 💰/сек`;
+            totalCpsVal.innerText = `${formatNumbers(gameState.baseIncome * finalMult)} 💰/сек`;
 
-            updateQuestsAndBoostsUI();
+            updateQuestsUI();
         }
 
-        function updateQuestsAndBoostsUI() {
+        function updateQuestsUI() {
             const now = Date.now();
-            ['X2', 'X5'].forEach(type => {
+            ['Lvl1', 'Lvl2', 'Lvl3'].forEach(type => {
                 const bBtn = document.getElementById(`boost${type}-btn`);
                 const bStatus = document.getElementById(`boost${type}-status`);
                 const qBox = document.getElementById(`quest${type}-box`);
                 const qTitle = document.getElementById(`quest${type}-title`);
                 const qProg = document.getElementById(`quest${type}-prog`);
+                const qRew = document.getElementById(`quest${type}-rew`);
                 
-                let bData = gameState.boosts[type];
+                let qData = gameState.quests[type];
 
-                if (bData.activeUntil > now) {
+                if (qData.cooldownUntil > now) {
                     bBtn.disabled = true;
                     qBox.style.display = "none";
-                    let rem = Math.ceil((bData.activeUntil - now) / 1000);
-                    bStatus.innerText = `Активен: ${formatTime(rem)}`;
-                    bStatus.style.color = "var(--success-color)";
-                } else if (bData.cooldownUntil > now) {
-                    bBtn.disabled = true;
-                    qBox.style.display = "none";
-                    let rem = Math.ceil((bData.cooldownUntil - now) / 1000);
-                    bStatus.innerText = `Перезарядка: ${formatTime(rem)}`;
+                    let rem = Math.ceil((qData.cooldownUntil - now) / 1000);
+                    bStatus.innerText = `Новое задание через: ${formatTime(rem)}`;
                     bStatus.style.color = "var(--warning-color)";
                 } else {
                     qBox.style.display = "block";
-                    qTitle.innerText = bData.quest.text + bData.quest.target;
-                    qProg.innerText = `${Math.floor(bData.progress)}/${bData.quest.target}`;
+                    qTitle.innerText = qData.quest.text + formatNumbers(qData.quest.target);
+                    qProg.innerText = `${formatNumbers(qData.progress)}/${formatNumbers(qData.quest.target)}`;
+                    qRew.innerText = qData.quest.reward.text;
                     
-                    if (bData.completed) {
+                    if (qData.completed) {
                         bBtn.disabled = false;
-                        bStatus.innerText = "Квест выполнен! Нажми для старта";
+                        bStatus.innerText = "Готово к сдаче!";
                         bStatus.style.color = "var(--success-color)";
                     } else {
                         bBtn.disabled = true;
-                        bStatus.innerText = "Выполняйте квест...";
+                        bStatus.innerText = "Выполняйте условия...";
                         bStatus.style.color = "#aaa";
                     }
                 }
@@ -614,7 +723,7 @@
                     const isEquipped = gameState.equippedMeme === key;
                     const itemHtml = `
                         <div class="inv-item ${isEquipped ? 'equipped' : ''}" style="border-left-color: ${meme.color}">
-                            <img src="${meme.img}" class="inv-img-preview" alt="img">
+                            <img src="${meme.id}.jpg" class="inv-img-preview" alt="img" onerror="this.src='https://placehold.co/40x40/2a2a2a/ffffff?text=%3F'">
                             <div class="inv-info">
                                 <div class="inv-title-line">
                                     <span class="inv-name" style="color:${meme.color}">${meme.name}</span>
@@ -623,7 +732,7 @@
                                 <span class="inv-rarity" style="color:${meme.color}">${meme.rarity}</span>
                             </div>
                             <button class="equip-btn ${isEquipped ? 'eq' : ''}" onclick="equipMeme('${meme.id}')" ${isEquipped ? 'disabled' : ''}>
-                                ${isEquipped ? 'Надет' : 'Надеть'}
+                                ${isEquipped ? 'Надет' : 'Взять'}
                             </button>
                         </div>
                     `;
@@ -632,8 +741,28 @@
             });
         }
 
+        function renderIndex() {
+            indexDisplay.innerHTML = '';
+            Object.keys(MEME_REGISTRY).forEach(key => {
+                const meme = MEME_REGISTRY[key];
+                const isOwned = gameState.ownedMemes.includes(key);
+                
+                const cardHtml = `
+                    <div class="index-card ${isOwned ? 'owned' : ''}">
+                        <img src="${meme.id}.jpg" alt="${meme.name}" onerror="this.src='https://placehold.co/100x80/2a2a2a/ffffff?text=No+Pic'">
+                        <div class="index-card-title" style="color: ${meme.color};" title="${meme.name}">${meme.name}</div>
+                        <div class="index-card-mult">Множитель: x${meme.mult}</div>
+                        <div class="index-status-tag ${isOwned ? 'have' : 'not-have'}">
+                            ${isOwned ? '● Имеется' : 'Не открыт'}
+                        </div>
+                    </div>
+                `;
+                indexDisplay.insertAdjacentHTML('beforeend', cardHtml);
+            });
+        }
+
         function equipMeme(id) {
-            if (isPlaying || isCooldown) return alert("Нельзя менять мем во время фарма!");
+            if (isPlaying || isCooldown) return alert("Нельзя переодевать мем во время работы фермы!");
             if(gameState.ownedMemes.includes(id)) {
                 gameState.equippedMeme = id;
                 switchMeme(id);
@@ -644,13 +773,15 @@
         }
 
         function switchMeme(id) {
-            const data = MEME_REGISTRY[id];
-            cardImg.src = data.img;
-            cardVid.src = data.vid;
+            cardImg.src = `${id}.jpg`;
+            cardVid.src = `${id}.mp4`;
         }
 
         function openMemeBox(boxType) {
-            let cost = (boxType === 'wood') ? 5000 : 50000;
+            let cost = 5000;
+            if (boxType === 'iron') cost = 50000;
+            if (boxType === 'gold') cost = 500000;
+
             if (gameState.coins < cost) return;
 
             gameState.coins -= cost;
@@ -661,37 +792,61 @@
 
             setTimeout(() => {
                 emojiEl.classList.remove('shake');
-                let rand = Math.random() * 100;
                 let rolledId = 'wobble';
+                
+                let luckFactor = getPotionLuck(); 
+                let rand = Math.random() * 100;
 
                 if (boxType === 'wood') {
-                    if (rand < 60) rolledId = Math.random() < 0.5 ? 'wobble' : 'meow';
-                    else if (rand < 85) rolledId = 'giga';
-                    else if (rand < 97) rolledId = 'pedro';
+                    if (rand < 55) rolledId = Math.random() < 0.5 ? 'wobble' : 'meow';
+                    else if (rand < 80) rolledId = 'giga';
+                    else if (rand < 95) rolledId = 'pedro';
                     else rolledId = 'congr';
-                } else {
-                    if (rand < 25) rolledId = 'congr_iron'; 
-                    else if (rand < 50) rolledId = 'tung';     
-                    else if (rand < 75) rolledId = 'nectar';   
-                    else if (rand < 92) rolledId = 'sahur';    
-                    else rolledId = 'sigma';                   
+                } else if (boxType === 'iron') {
+                    if (rand < 40) rolledId = 'giga';
+                    else if (rand < 75) rolledId = 'pedro';
+                    else rolledId = 'congr';
+                } else if (boxType === 'gold') {
+                    let mythicChance = 0.5 * luckFactor;
+                    let legendaryChance = 7.5 * luckFactor;
+                    let epicChance = 20.0 * luckFactor;
+                    let rareChance = 35.0;
+
+                    let roll = Math.random() * 100;
+
+                    if (roll < mythicChance) {
+                        rolledId = 'mellstroy';
+                    } else if (roll < (mythicChance + legendaryChance)) {
+                        rolledId = 'ai';
+                    } else if (roll < (mythicChance + legendaryChance + epicChance)) {
+                        rolledId = 'cheremsha';
+                    } else if (roll < (mythicChance + legendaryChance + epicChance + rareChance)) {
+                        rolledId = 'cow';
+                    } else {
+                        rolledId = 'ladder';
+                    }
                 }
 
                 const rolledMeme = MEME_REGISTRY[rolledId];
                 
                 if (!gameState.ownedMemes.includes(rolledId)) {
                     gameState.ownedMemes.push(rolledId);
-                    alert(`🎉 Из ящика выпал новый мем: ${rolledMeme.name} (x${rolledMeme.mult.toFixed(1)})!`);
+                    alert(`🎉 Из коробки получен новый мем: ${rolledMeme.name}!`);
                 } else {
-                    let compensation = (boxType === 'wood') ? 1200 : 12000;
+                    let compensation = Math.floor(cost * 0.25);
                     gameState.coins += compensation;
-                    alert(`📦 Повторка: ${rolledMeme.name}. Получено компенсации ${compensation} монет.`);
+                    alert(`📦 Повторка: ${rolledMeme.name}. Получена компенсация ${formatNumbers(compensation)} монет.`);
                 }
 
                 updateQuestProgress('open_box', 1);
+                if (boxType === 'gold') {
+                    updateQuestProgress('open_gold_box', 1);
+                }
+                
                 saveGame();
                 updateUI();
-                if(document.getElementById('tab-memes').style.display !== 'none') renderInventory();
+                renderInventory();
+                renderIndex();
             }, 400);
         }
 
@@ -706,15 +861,22 @@
 
             isPlaying = true;
             memeCard.classList.add('active');
-            statusDisplay.innerText = "Фарм идет...";
+            statusDisplay.innerText = "Ферма запущена, идет фарм монет...";
             stopFarmBtn.style.display = "block";
 
-            cardVid.muted = false;
+            cardVid.muted = true; 
             cardVid.currentTime = 0;
-            cardVid.play().catch(err => console.log(err));
-
-            progressBar.style.transition = `width ${gameState.duration}s linear`;
-            progressBar.style.width = '100%';
+            
+            let playPromise = cardVid.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    cardVid.muted = false;
+                }).catch(err => {
+                    console.log("Звук временно заблокирован браузером.", err);
+                    cardVid.muted = true;
+                    cardVid.play();
+                });
+            }
 
             incomeInterval = setInterval(() => {
                 let generated = gameState.baseIncome * getFinalMultiplier();
@@ -749,7 +911,7 @@
         function startCooldown() {
             isCooldown = true;
             memeCard.classList.add('cooldown');
-            statusDisplay.innerText = "Перезарядка...";
+            statusDisplay.innerText = "Остывание карты...";
 
             progressBar.style.transition = 'none';
             progressBar.style.width = '100%';
@@ -761,7 +923,7 @@
 
             setTimeout(() => {
                 memeCard.classList.remove('cooldown');
-                statusDisplay.innerText = "Мем готов! Нажми для активации";
+                statusDisplay.innerText = "Мем готов! Жми для запуска";
                 isCooldown = false;
                 updateUI();
                 saveGame();
@@ -804,9 +966,7 @@
             }
         }
 
-        setInterval(() => {
-            updateUI();
-        }, 1000);
+        setInterval(() => { updateUI(); }, 1000);
 
         loadGame();
         switchMeme(gameState.equippedMeme);
