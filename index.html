@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Excuse me sir! - Definitive Edition v3</title>
+    <title>Excuse me sir! - Definitive Edition v3.1</title>
     <style>
         :root {
             --bg-color: #121212;
@@ -147,7 +147,7 @@
         .index-card-title { font-size: 0.85rem; font-weight: bold; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; }
         .index-card-mult { font-size: 0.75rem; color: var(--gold-color); font-weight: bold; }
         .index-card-chance { font-size: 0.75rem; color: #00bcff; font-weight: bold; }
-        .index-status-tag { font-size: 0.7rem; font-weight: bold; padding: 2px 6px; border-radius: 4px; margin-top: 4px; }
+        .index-status-tag { font-size: 0.7 room; font-weight: bold; padding: 2px 6px; border-radius: 4px; margin-top: 4px; }
         .index-status-tag.have { background: rgba(40, 167, 69, 0.2); color: #2ecc71; }
         .index-status-tag.not-have { background: rgba(255,255,255,0.05); color: #777; }
 
@@ -314,6 +314,7 @@
             <div><span>Итоговый доход:</span> <span id="total-cps-val" style="color: var(--success-color); font-weight: bold;">10 💰/сек</span></div>
         </div>
 
+        <!-- КНОПКА ДЛЯ ПРОМОКОДОВ -->
         <button class="promo-btn" onclick="enterPromoCode()">Ввести промокод</button>
         <button class="reset-btn" onclick="resetGame()">Сбросить всё</button>
     </div>
@@ -378,24 +379,17 @@
 
     <script>
         const MEME_REGISTRY = {
-            // Стартовый
             'sir': { id: 'sir', name: 'Excuse me sir!', mult: 1.0, rarity: 'Базовый', color: 'var(--rarity-common)', box: 'start', baseChance: 100 },
-            
-            // Деревянный ящик
             'wobble': { id: 'wobble', name: 'Wobble meme', mult: 2.5, rarity: 'Обычный', color: '#aaaaaa', box: 'wood', baseChance: 40 },
             'meow': { id: 'meow', name: 'Meow', mult: 4.0, rarity: 'Обычный', color: '#aaaaaa', box: 'wood', baseChance: 35 },
             'giga': { id: 'giga', name: 'Gihachad', mult: 12.0, rarity: 'Редкий', color: 'var(--rarity-rare)', box: 'wood', baseChance: 15 },
             'pedro': { id: 'pedro', name: 'Pedro Raccoon', mult: 25.0, rarity: 'Эпический', color: 'var(--rarity-epic)', box: 'wood', baseChance: 8 },
             'congr': { id: 'congr', name: 'Congregation', mult: 50.0, rarity: 'Легендарный', color: 'var(--rarity-legendary)', box: 'wood', baseChance: 2 },
-            
-            // Железный ящик
             'congr_iron': { id: 'congr', name: 'Congregation', mult: 50.0, rarity: 'Обычный', color: '#aaaaaa', box: 'iron', baseChance: 45 },
             'sahur': { id: 'sahur', name: 'Sahur', mult: 65.0, rarity: 'Редкий', color: 'var(--rarity-rare)', box: 'iron', baseChance: 30 },
             'nectarynki': { id: 'nectarynki', name: 'Nectarynki', mult: 90.0, rarity: 'Эпический', color: 'var(--rarity-epic)', box: 'iron', baseChance: 12 },
             'tung': { id: 'tung', name: 'Tung', mult: 100.0, rarity: 'Эпический', color: 'var(--rarity-epic)', box: 'iron', baseChance: 10 },
             'sigma': { id: 'sigma', name: 'Sigma', mult: 140.0, rarity: 'Легендарный', color: 'var(--rarity-legendary)', box: 'iron', baseChance: 3 },
-            
-            // Золотой ящик
             'cow': { id: 'cow', name: 'Польская корова', mult: 160.0, rarity: 'Обычный', color: '#aaaaaa', box: 'gold', baseChance: 45 },
             'ladder': { id: 'ladder', name: 'Лестница', mult: 200.0, rarity: 'Эпический', color: 'var(--rarity-epic)', box: 'gold', baseChance: 25 },
             'cheremsha': { id: 'cheremsha', name: 'Черемша', mult: 260.0, rarity: 'Редкий', color: 'var(--rarity-rare)', box: 'gold', baseChance: 20 },
@@ -516,15 +510,16 @@
             }
         }
 
+        // ИЗМЕНЕНО ОБРАТНО НА 50 000 МОНЕТ
         function enterPromoCode() {
             let code = prompt("Введите промокод:");
             if (code === null) return;
-            if (code.trim() === "Tehnosemya") {
-                if (gameState.usedPromos.includes("Tehnosemya")) {
+            if (code.trim() === "Tehnosemya1") {
+                if (gameState.usedPromos.includes("Tehnosemya1")) {
                     alert("Этот промокод уже был активирован!");
                 } else {
-                    gameState.coins += 50000;
-                    gameState.usedPromos.push("Tehnosemya");
+                    gameState.coins += 50000; // НАГРАДА ИЗМЕНЕНА НА 50к
+                    gameState.usedPromos.push("Tehnosemya1");
                     alert("Промокод успешно активирован! Зачислено 50к монет.");
                     saveGame(); updateUI();
                 }
