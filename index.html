@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Excuse me sir! - Definitive Edition v2</title>
+    <title>Excuse me sir! - Definitive Edition v3</title>
     <style>
         :root {
             --bg-color: #121212;
@@ -139,12 +139,14 @@
 
         /* Стили Индекса */
         .index-menu-bar { display: flex; gap: 5px; margin-bottom: 10px; }
+        .index-section-title { font-size: 1rem; color: var(--warning-color); border-bottom: 1px solid #444; padding-bottom: 4px; margin: 15px 0 8px 0; font-weight: bold; text-align: left; }
         .index-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .index-card { background: #1a1a1a; border: 1px solid #333; border-radius: 6px; padding: 8px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 4px; position: relative; }
         .index-card.owned { border-color: var(--success-color); background: #162419; }
         .index-card img { width: 100%; height: 80px; object-fit: cover; border-radius: 4px; background: #000; }
         .index-card-title { font-size: 0.85rem; font-weight: bold; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; }
         .index-card-mult { font-size: 0.75rem; color: var(--gold-color); font-weight: bold; }
+        .index-card-chance { font-size: 0.75rem; color: #00bcff; font-weight: bold; }
         .index-status-tag { font-size: 0.7rem; font-weight: bold; padding: 2px 6px; border-radius: 4px; margin-top: 4px; }
         .index-status-tag.have { background: rgba(40, 167, 69, 0.2); color: #2ecc71; }
         .index-status-tag.not-have { background: rgba(255,255,255,0.05); color: #777; }
@@ -180,9 +182,8 @@
         .meme-card-wrapper.active .card-preview { opacity: 0; }
         .meme-card-wrapper.active .card-video { opacity: 1; pointer-events: auto; }
 
-        .cooldown-overlay { position: absolute; bottom: 0; left: 0; width: 100%; height: 8px; background-color: rgba(255, 255, 255, 0.2); }
-        .cooldown-progress { width: 0%; height: 100%; background-color: var(--success-color); transition: width linear; }
-        .meme-card-wrapper.cooldown .cooldown-progress { background-color: var(--warning-color); }
+        .cooldown-overlay { position: absolute; bottom: 0; left: 0; width: 100%; height: 8px; background-color: rgba(255, 255, 255, 0.2); z-index: 4; }
+        .cooldown-progress { width: 0%; height: 100%; background-color: var(--success-color); }
         
         .status-text { font-size: 1rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); text-align: center; min-height: 24px; padding: 0 10px; }
         .timer-text { font-size: 0.85rem; font-weight: bold; color: var(--warning-color); text-align: center; display: block; margin-top: 2px;}
@@ -301,8 +302,8 @@
             </div>
 
             <div id="subtab-index" style="display: none;">
-                <h3>Все мемы игры</h3>
-                <div class="index-grid" id="index-display"></div>
+                <h3>Индекс Мемов по Ящикам</h3>
+                <div id="index-display"></div>
             </div>
         </div>
 
@@ -377,22 +378,31 @@
 
     <script>
         const MEME_REGISTRY = {
-            'sir': { id: 'sir', name: 'Excuse me sir!', mult: 1.0, rarity: 'Базовый', color: 'var(--rarity-common)' },
-            'wobble': { id: 'wobble', name: 'Wobble Cat', mult: 2.5, rarity: 'Обычный', color: '#aaaaaa' },
-            'meow': { id: 'meow', name: 'Pop Cat Meow', mult: 4.0, rarity: 'Обычный', color: '#aaaaaa' },
-            'giga': { id: 'giga', name: 'Gigachad Click', mult: 12.0, rarity: 'Редкий', color: 'var(--rarity-rare)' },
-            'pedro': { id: 'pedro', name: 'Pedro Raccoon', mult: 25.0, rarity: 'Эпический', color: 'var(--rarity-epic)' },
-            'congr': { id: 'congr', name: 'Congregation', mult: 50.0, rarity: 'Легендарный', color: 'var(--rarity-legendary)' },
+            // Стартовый
+            'sir': { id: 'sir', name: 'Excuse me sir!', mult: 1.0, rarity: 'Базовый', color: 'var(--rarity-common)', box: 'start', baseChance: 100 },
+            
+            // Деревянный ящик
+            'wobble': { id: 'wobble', name: 'Wobble meme', mult: 2.5, rarity: 'Обычный', color: '#aaaaaa', box: 'wood', baseChance: 40 },
+            'meow': { id: 'meow', name: 'Meow', mult: 4.0, rarity: 'Обычный', color: '#aaaaaa', box: 'wood', baseChance: 35 },
+            'giga': { id: 'giga', name: 'Gihachad', mult: 12.0, rarity: 'Редкий', color: 'var(--rarity-rare)', box: 'wood', baseChance: 15 },
+            'pedro': { id: 'pedro', name: 'Pedro Raccoon', mult: 25.0, rarity: 'Эпический', color: 'var(--rarity-epic)', box: 'wood', baseChance: 8 },
+            'congr': { id: 'congr', name: 'Congregation', mult: 50.0, rarity: 'Легендарный', color: 'var(--rarity-legendary)', box: 'wood', baseChance: 2 },
+            
+            // Железный ящик
+            'congr_iron': { id: 'congr', name: 'Congregation', mult: 50.0, rarity: 'Обычный', color: '#aaaaaa', box: 'iron', baseChance: 45 },
+            'sahur': { id: 'sahur', name: 'Sahur', mult: 65.0, rarity: 'Редкий', color: 'var(--rarity-rare)', box: 'iron', baseChance: 30 },
+            'nectarynki': { id: 'nectarynki', name: 'Nectarynki', mult: 90.0, rarity: 'Эпический', color: 'var(--rarity-epic)', box: 'iron', baseChance: 12 },
+            'tung': { id: 'tung', name: 'Tung', mult: 100.0, rarity: 'Эпический', color: 'var(--rarity-epic)', box: 'iron', baseChance: 10 },
+            'sigma': { id: 'sigma', name: 'Sigma', mult: 140.0, rarity: 'Легендарный', color: 'var(--rarity-legendary)', box: 'iron', baseChance: 3 },
             
             // Золотой ящик
-            'ladder': { id: 'ladder', name: 'Лестница', mult: 80.0, rarity: 'Обычный', color: '#bfbfbf' },
-            'cow': { id: 'cow', name: 'Польская корова', mult: 110.0, rarity: 'Редкий', color: 'var(--rarity-rare)' },
-            'cheremsha': { id: 'cheremsha', name: 'Черемша', mult: 150.0, rarity: 'Эпический', color: 'var(--rarity-epic)' },
-            'ai': { id: 'ai', name: 'Искусственный Интеллект', mult: 200.0, rarity: 'Легендарный', color: 'var(--rarity-legendary)' },
-            'mellstroy': { id: 'mellstroy', name: 'Мелстройность', mult: 350.0, rarity: 'Мифический', color: 'var(--rarity-mythic)' }
+            'cow': { id: 'cow', name: 'Польская корова', mult: 160.0, rarity: 'Обычный', color: '#aaaaaa', box: 'gold', baseChance: 45 },
+            'ladder': { id: 'ladder', name: 'Лестница', mult: 200.0, rarity: 'Эпический', color: 'var(--rarity-epic)', box: 'gold', baseChance: 25 },
+            'cheremsha': { id: 'cheremsha', name: 'Черемша', mult: 260.0, rarity: 'Редкий', color: 'var(--rarity-rare)', box: 'gold', baseChance: 20 },
+            'ai': { id: 'ai', name: 'Искусственный Интеллект', mult: 350.0, rarity: 'Легендарный', color: 'var(--rarity-legendary)', box: 'gold', baseChance: 9.5 },
+            'mellstroy': { id: 'mellstroy', name: 'Мелстройность', mult: 600.0, rarity: 'Мифический', color: 'var(--rarity-mythic)', box: 'gold', baseChance: 0.5 }
         };
 
-        // ТРИ ВАРИАЦИИ квестов на каждую сложность
         const QUEST_POOLS = {
             'Lvl1': [
                 { id: 'coins', text: 'Собрать монет: ', target: 3000, reward: { type: 'pot_mult', count: 1, text: '🧪 1 Зелье Силы' } },
@@ -435,6 +445,7 @@
         let isCooldown = false;
         let incomeInterval = null;
         let mainTimeout = null;
+        let progressAnimationId = null;
 
         const balanceDisplay = document.getElementById('balance-display');
         const memeCard = document.getElementById('meme-card');
@@ -458,24 +469,17 @@
         const inventoryDisplay = document.getElementById('inventory-display');
         const indexDisplay = document.getElementById('index-display');
 
-        // Функция сокращения больших чисел (1000 -> 1к, 1000000 -> 1М)
         function formatNumbers(num) {
             if (num === null || num === undefined || isNaN(num)) return "0";
             let rounded = Math.floor(num);
-            if (rounded >= 1000000000) {
-                return (rounded / 1000000000).toFixed(1).replace(/\.0$/, '') + 'Б';
-            }
-            if (rounded >= 1000000) {
-                return (rounded / 1000000).toFixed(1).replace(/\.0$/, '') + 'М';
-            }
-            if (rounded >= 1000) {
-                return (rounded / 1000).toFixed(1).replace(/\.0$/, '') + 'к';
-            }
+            if (rounded >= 1000000000) return (rounded / 1000000000).toFixed(1).replace(/\.0$/, '') + 'Б';
+            if (rounded >= 1000000) return (rounded / 1000000).toFixed(1).replace(/\.0$/, '') + 'М';
+            if (rounded >= 1000) return (rounded / 1000).toFixed(1).replace(/\.0$/, '') + 'к';
             return rounded.toString();
         }
 
         function loadGame() {
-            const savedData = localStorage.getItem('excuseMeSir_v14_save');
+            const savedData = localStorage.getItem('excuseMeSir_v15_save');
             if (savedData) {
                 try {
                     gameState = JSON.parse(savedData);
@@ -485,34 +489,29 @@
                     if(!gameState.ownedMemes) gameState.ownedMemes = ['sir'];
                     if(!gameState.equippedMeme) gameState.equippedMeme = 'sir';
                     if(!gameState.usedPromos) gameState.usedPromos = [];
+                    
+                    gameState.ownedMemes = gameState.ownedMemes.map(m => m === 'congr' && !MEME_REGISTRY[m] ? 'congr_iron' : m);
                 } catch (e) {
                     gameState = JSON.parse(JSON.stringify(defaultState));
                 }
             } else {
                 gameState = JSON.parse(JSON.stringify(defaultState));
             }
-            
-            initQuest('Lvl1');
-            initQuest('Lvl2');
-            initQuest('Lvl3');
+            initQuest('Lvl1'); initQuest('Lvl2'); initQuest('Lvl3');
         }
 
         function saveGame() {
-            localStorage.setItem('excuseMeSir_v14_save', JSON.stringify(gameState));
+            localStorage.setItem('excuseMeSir_v15_save', JSON.stringify(gameState));
         }
 
         function resetGame() {
             if (confirm("Вы уверены, что хотите полностью стереть прогресс?")) {
                 stopMemeFarm();
-                localStorage.removeItem('excuseMeSir_v14_save');
+                localStorage.removeItem('excuseMeSir_v15_save');
                 gameState = JSON.parse(JSON.stringify(defaultState));
-                initQuest('Lvl1', true);
-                initQuest('Lvl2', true);
-                initQuest('Lvl3', true);
+                initQuest('Lvl1', true); initQuest('Lvl2', true); initQuest('Lvl3', true);
                 switchMeme(gameState.equippedMeme);
-                updateUI();
-                renderInventory();
-                renderIndex();
+                updateUI(); renderInventory(); renderIndex();
                 statusDisplay.innerText = "Прогресс успешно сброшен!";
             }
         }
@@ -520,17 +519,14 @@
         function enterPromoCode() {
             let code = prompt("Введите промокод:");
             if (code === null) return;
-            
-            let cleanCode = code.trim();
-            if (cleanCode === "Tehnosemya") {
+            if (code.trim() === "Tehnosemya") {
                 if (gameState.usedPromos.includes("Tehnosemya")) {
                     alert("Этот промокод уже был активирован!");
                 } else {
                     gameState.coins += 50000;
                     gameState.usedPromos.push("Tehnosemya");
                     alert("Промокод успешно активирован! Зачислено 50к монет.");
-                    saveGame();
-                    updateUI();
+                    saveGame(); updateUI();
                 }
             } else {
                 alert("Неверный промокод!");
@@ -541,10 +537,8 @@
             let qData = gameState.quests[type];
             const pool = QUEST_POOLS[type];
             let isValid = qData && qData.quest && pool.some(q => q.id === qData.quest.id);
-
             if (!isValid || forceNew) {
-                const randomQuest = pool[Math.floor(Math.random() * pool.length)];
-                gameState.quests[type].quest = { ...randomQuest };
+                gameState.quests[type].quest = { ...pool[Math.floor(Math.random() * pool.length)] };
                 gameState.quests[type].progress = 0;
                 gameState.quests[type].completed = false;
             }
@@ -570,17 +564,11 @@
             const now = Date.now();
             let qData = gameState.quests[type];
             if (!qData.completed) return;
-
-            const rew = qData.quest.reward;
-            if (rew.type === 'pot_luck') gameState.potions.luck += rew.count;
-            if (rew.type === 'pot_mult') gameState.potions.mult += rew.count;
-
-            qData.cooldownUntil = now + 10 * 1000; // 10 секунд до нового квеста
+            if (qData.quest.reward.type === 'pot_luck') gameState.potions.luck += qData.quest.reward.count;
+            if (qData.quest.reward.type === 'pot_mult') gameState.potions.mult += qData.quest.reward.count;
+            qData.cooldownUntil = now + 10 * 1000;
             qData.completed = false;
-            
-            initQuest(type, true);
-            saveGame();
-            updateUI();
+            initQuest(type, true); saveGame(); updateUI();
         }
 
         function usePotion(type) {
@@ -592,8 +580,7 @@
                 gameState.potions.mult--;
                 gameState.activePotions.multUntil = Math.max(gameState.activePotions.multUntil, now) + 3 * 60 * 1000;
             }
-            saveGame();
-            updateUI();
+            saveGame(); updateUI();
         }
 
         function switchTab(tabId) {
@@ -601,15 +588,13 @@
             document.getElementById('tab-btn-memes').classList.remove('active');
             document.getElementById('tab-upgrades').style.display = 'none';
             document.getElementById('tab-memes').style.display = 'none';
-            
             if(tabId === 'upgrades') {
                 document.getElementById('tab-btn-upgrades').classList.add('active');
                 document.getElementById('tab-upgrades').style.display = 'flex';
             } else {
                 document.getElementById('tab-btn-memes').classList.add('active');
                 document.getElementById('tab-memes').style.display = 'flex';
-                renderInventory();
-                renderIndex();
+                renderInventory(); renderIndex();
             }
         }
 
@@ -618,7 +603,6 @@
             document.getElementById('subtab-btn-index').classList.remove('active');
             document.getElementById('subtab-inv').style.display = 'none';
             document.getElementById('subtab-index').style.display = 'none';
-
             if (subTabId === 'inv') {
                 document.getElementById('subtab-btn-inv').classList.add('active');
                 document.getElementById('subtab-inv').style.display = 'flex';
@@ -634,20 +618,11 @@
             let lvl = gameState.levels.multiplier;
             return 1 + (lvl - 1) * 0.50 + Math.pow(lvl - 1, 1.5) * 0.15;
         }
-
-        function getPotionMultiplier() {
-            const now = Date.now();
-            return (gameState.activePotions.multUntil > now) ? 1.5 : 1.0;
-        }
-
-        function getPotionLuck() {
-            const now = Date.now();
-            return (gameState.activePotions.luckUntil > now) ? 1.5 : 1.0;
-        }
-
+        function getPotionMultiplier() { return (gameState.activePotions.multUntil > Date.now()) ? 1.5 : 1.0; }
+        function getPotionLuck() { return (gameState.activePotions.luckUntil > Date.now()) ? 1.5 : 1.0; }
         function getFinalMultiplier() {
-            const currentMemeData = MEME_REGISTRY[gameState.equippedMeme] || MEME_REGISTRY['sir'];
-            return currentMemeData.mult * getUpgradeMultiplier() * getPotionMultiplier();
+            const mData = MEME_REGISTRY[gameState.equippedMeme] || MEME_REGISTRY['sir'];
+            return mData.mult * getUpgradeMultiplier() * getPotionMultiplier();
         }
 
         function updateUI() {
@@ -655,7 +630,6 @@
             multUpgradeVal.innerText = `x${getUpgradeMultiplier().toFixed(2)}`;
             durationVal.innerText = gameState.duration;
             cooldownVal.innerText = gameState.cooldown.toFixed(1);
-            
             up1Cost.innerText = formatNumbers(gameState.costs.multiplier);
             up2Cost.innerText = formatNumbers(gameState.costs.duration);
             
@@ -672,36 +646,26 @@
             up3Lvl.innerText = `Ур. ${gameState.levels.cooldown}`;
 
             document.getElementById('up1-btn').disabled = gameState.coins < gameState.costs.multiplier;
-            document.getElementById('up2-btn').disabled = gameState.coins < gameState.costs.duration;
-            
+            document.getElementById('up2-btn').disabled = gameState.costs.duration;
             document.getElementById('buy-wood-btn').disabled = gameState.coins < 5000;   
             document.getElementById('buy-iron-btn').disabled = gameState.coins < 50000;  
             document.getElementById('buy-gold-btn').disabled = gameState.coins < 500000;  
 
             document.getElementById('pot-luck-count').innerText = gameState.potions.luck;
             document.getElementById('pot-mult-count').innerText = gameState.potions.mult;
-            document.getElementById('pot-luck-btn').disabled = gameState.potions.luck <= 0;
-            document.getElementById('pot-mult-btn').disabled = gameState.potions.mult <= 0;
 
             const now = Date.now();
-            if (gameState.activePotions.luckUntil > now) {
-                document.getElementById('pot-luck-timer').innerText = formatTime(Math.ceil((gameState.activePotions.luckUntil - now)/1000));
-            } else { document.getElementById('pot-luck-timer').innerText = ''; }
+            document.getElementById('pot-luck-timer').innerText = gameState.activePotions.luckUntil > now ? formatTime(Math.ceil((gameState.activePotions.luckUntil - now)/1000)) : '';
+            document.getElementById('pot-mult-timer').innerText = gameState.activePotions.multUntil > now ? formatTime(Math.ceil((gameState.activePotions.multUntil - now)/1000)) : '';
 
-            if (gameState.activePotions.multUntil > now) {
-                document.getElementById('pot-mult-timer').innerText = formatTime(Math.ceil((gameState.activePotions.multUntil - now)/1000));
-            } else { document.getElementById('pot-mult-timer').innerText = ''; }
-
-            const currentMeme = MEME_REGISTRY[gameState.equippedMeme];
+            const currentMeme = MEME_REGISTRY[gameState.equippedMeme] || MEME_REGISTRY['sir'];
             activeMemeName.innerText = currentMeme.name;
             activeMemeName.style.color = currentMeme.color;
-            
             document.getElementById('total-luck-display').innerText = `${Math.floor(getPotionLuck() * 100)}%`;
 
             let finalMult = getFinalMultiplier();
             totalMultVal.innerText = `x${finalMult.toFixed(2)}`;
             totalCpsVal.innerText = `${formatNumbers(gameState.baseIncome * finalMult)} 💰/сек`;
-
             updateQuestsUI();
         }
 
@@ -711,32 +675,21 @@
                 const bBtn = document.getElementById(`boost${type}-btn`);
                 const bStatus = document.getElementById(`boost${type}-status`);
                 const qBox = document.getElementById(`quest${type}-box`);
-                const qTitle = document.getElementById(`quest${type}-title`);
-                const qProg = document.getElementById(`quest${type}-prog`);
-                const qRew = document.getElementById(`quest${type}-rew`);
-                
                 let qData = gameState.quests[type];
 
                 if (qData.cooldownUntil > now) {
-                    bBtn.disabled = true;
-                    qBox.style.display = "none";
-                    let rem = Math.ceil((qData.cooldownUntil - now) / 1000);
-                    bStatus.innerText = `Новое задание через: ${formatTime(rem)}`;
+                    bBtn.disabled = true; qBox.style.display = "none";
+                    bStatus.innerText = `Новое задание через: ${formatTime(Math.ceil((qData.cooldownUntil - now) / 1000))}`;
                     bStatus.style.color = "var(--warning-color)";
                 } else {
                     qBox.style.display = "block";
-                    qTitle.innerText = qData.quest.text + formatNumbers(qData.quest.target);
-                    qProg.innerText = `${formatNumbers(qData.progress)}/${formatNumbers(qData.quest.target)}`;
-                    qRew.innerText = qData.quest.reward.text;
-                    
+                    document.getElementById(`quest${type}-title`).innerText = qData.quest.text + formatNumbers(qData.quest.target);
+                    document.getElementById(`quest${type}-prog`).innerText = `${formatNumbers(qData.progress)}/${formatNumbers(qData.quest.target)}`;
+                    document.getElementById(`quest${type}-rew`).innerText = qData.quest.reward.text;
                     if (qData.completed) {
-                        bBtn.disabled = false;
-                        bStatus.innerText = "Готово к сдаче!";
-                        bStatus.style.color = "var(--success-color)";
+                        bBtn.disabled = false; bStatus.innerText = "Готово к сдаче!"; bStatus.style.color = "var(--success-color)";
                     } else {
-                        bBtn.disabled = true;
-                        bStatus.innerText = "Выполняйте условия...";
-                        bStatus.style.color = "#aaa";
+                        bBtn.disabled = true; bStatus.innerText = "Выполняйте условия..."; bStatus.style.color = "#aaa";
                     }
                 }
             });
@@ -758,7 +711,7 @@
                                 </div>
                                 <span class="inv-rarity" style="color:${meme.color}">${meme.rarity}</span>
                             </div>
-                            <button class="equip-btn ${isEquipped ? 'eq' : ''}" onclick="equipMeme('${meme.id}')" ${isEquipped ? 'disabled' : ''}>
+                            <button class="equip-btn ${isEquipped ? 'eq' : ''}" onclick="equipMeme('${key}')" ${isEquipped ? 'disabled' : ''}>
                                 ${isEquipped ? 'Надет' : 'Взять'}
                             </button>
                         </div>
@@ -770,92 +723,91 @@
 
         function renderIndex() {
             indexDisplay.innerHTML = '';
-            Object.keys(MEME_REGISTRY).forEach(key => {
-                const meme = MEME_REGISTRY[key];
-                const isOwned = gameState.ownedMemes.includes(key);
+            const sections = [
+                { id: 'start', title: '🟢 Стартовый мем' },
+                { id: 'wood', title: '📦 Деревянный ящик' },
+                { id: 'iron', title: '🧳 Железный ящик' },
+                { id: 'gold', title: '🔱 Золотой ящик' }
+            ];
+
+            sections.forEach(sec => {
+                const secMemes = Object.keys(MEME_REGISTRY).filter(k => MEME_REGISTRY[k].box === sec.id);
+                if (secMemes.length === 0) return;
+
+                let sectionHtml = `<div class="index-section-title">${sec.title}</div><div class="index-grid">`;
                 
-                const cardHtml = `
-                    <div class="index-card ${isOwned ? 'owned' : ''}">
-                        <img src="${meme.id}.jpg" alt="${meme.name}" onerror="this.src='https://placehold.co/100x80/2a2a2a/ffffff?text=No+Pic'">
-                        <div class="index-card-title" style="color: ${meme.color};" title="${meme.name}">${meme.name}</div>
-                        <div class="index-card-mult">Множитель: x${meme.mult}</div>
-                        <div class="index-status-tag ${isOwned ? 'have' : 'not-have'}">
-                            ${isOwned ? '● Имеется' : 'Не открыт'}
+                secMemes.forEach(key => {
+                    const meme = MEME_REGISTRY[key];
+                    const isOwned = gameState.ownedMemes.includes(key);
+                    sectionHtml += `
+                        <div class="index-card ${isOwned ? 'owned' : ''}">
+                            <img src="${meme.id}.jpg" alt="${meme.name}" onerror="this.src='https://placehold.co/100x80/2a2a2a/ffffff?text=No+Pic'">
+                            <div class="index-card-title" style="color: ${meme.color};" title="${meme.name}">${meme.name}</div>
+                            <div class="index-card-mult">Множитель: x${meme.mult}</div>
+                            <div class="index-card-chance">Шанс: ${meme.baseChance}%</div>
+                            <div class="index-status-tag ${isOwned ? 'have' : 'not-have'}">${isOwned ? '● Имеется' : 'Не открыт'}</div>
                         </div>
-                    </div>
-                `;
-                indexDisplay.insertAdjacentHTML('beforeend', cardHtml);
+                    `;
+                });
+                sectionHtml += `</div>`;
+                indexDisplay.insertAdjacentHTML('beforeend', sectionHtml);
             });
         }
 
-        function equipMeme(id) {
+        function equipMeme(key) {
             if (isPlaying || isCooldown) return alert("Нельзя переодевать мем во время работы фермы!");
-            if(gameState.ownedMemes.includes(id)) {
-                gameState.equippedMeme = id;
-                switchMeme(id);
-                saveGame();
-                updateUI();
-                renderInventory();
+            if(gameState.ownedMemes.includes(key)) {
+                gameState.equippedMeme = key;
+                switchMeme(key); saveGame(); updateUI(); renderInventory();
             }
         }
 
-        function switchMeme(id) {
-            cardImg.src = `${id}.jpg`;
-            cardVid.src = `${id}.mp4`;
+        function switchMeme(key) {
+            const mData = MEME_REGISTRY[key] || MEME_REGISTRY['sir'];
+            cardImg.src = `${mData.id}.jpg`;
+            cardVid.src = `${mData.id}.mp4`;
         }
 
         function openMemeBox(boxType) {
-            let cost = 5000;
-            if (boxType === 'iron') cost = 50000;
-            if (boxType === 'gold') cost = 500000;
-
+            let cost = boxType === 'iron' ? 50000 : (boxType === 'gold' ? 500000 : 5000);
             if (gameState.coins < cost) return;
 
             gameState.coins -= cost;
             document.getElementById(`buy-${boxType}-btn`).disabled = true;
-            
             const emojiEl = document.getElementById(`box-${boxType}-emoji`);
             emojiEl.classList.add('shake');
 
             setTimeout(() => {
                 emojiEl.classList.remove('shake');
-                let rolledId = 'wobble';
+                let rolledId = 'sir';
+                let luckFactor = getPotionLuck();
                 
-                let luckFactor = getPotionLuck(); 
-                let rand = Math.random() * 100;
-
-                if (boxType === 'wood') {
-                    if (rand < 55) rolledId = Math.random() < 0.5 ? 'wobble' : 'meow';
-                    else if (rand < 80) rolledId = 'giga';
-                    else if (rand < 95) rolledId = 'pedro';
-                    else rolledId = 'congr';
-                } else if (boxType === 'iron') {
-                    if (rand < 40) rolledId = 'giga';
-                    else if (rand < 75) rolledId = 'pedro';
-                    else rolledId = 'congr';
-                } else if (boxType === 'gold') {
-                    let mythicChance = 0.5 * luckFactor;
-                    let legendaryChance = 7.5 * luckFactor;
-                    let epicChance = 20.0 * luckFactor;
-                    let rareChance = 35.0;
-
+                let pool = Object.keys(MEME_REGISTRY).filter(k => MEME_REGISTRY[k].box === boxType);
+                
+                if (boxType === 'gold') {
+                    let mChance = 0.5 * luckFactor;
+                    let lChance = 9.5 * luckFactor;
                     let roll = Math.random() * 100;
-
-                    if (roll < mythicChance) {
-                        rolledId = 'mellstroy';
-                    } else if (roll < (mythicChance + legendaryChance)) {
-                        rolledId = 'ai';
-                    } else if (roll < (mythicChance + legendaryChance + epicChance)) {
-                        rolledId = 'cheremsha';
-                    } else if (roll < (mythicChance + legendaryChance + epicChance + rareChance)) {
-                        rolledId = 'cow';
-                    } else {
-                        rolledId = 'ladder';
+                    if (roll < mChance) rolledId = 'mellstroy';
+                    else if (roll < (mChance + lChance)) rolledId = 'ai';
+                    else {
+                        let remaining = ['cow', 'ladder', 'cheremsha'];
+                        rolledId = remaining[Math.floor(Math.random() * remaining.length)];
+                    }
+                } else {
+                    let totalWeight = pool.reduce((acc, k) => acc + MEME_REGISTRY[k].baseChance, 0);
+                    let roll = Math.random() * totalWeight;
+                    let currentSum = 0;
+                    for (let key of pool) {
+                        currentSum += MEME_REGISTRY[key].baseChance;
+                        if (roll <= currentSum) {
+                            rolledId = key;
+                            break;
+                        }
                     }
                 }
 
                 const rolledMeme = MEME_REGISTRY[rolledId];
-                
                 if (!gameState.ownedMemes.includes(rolledId)) {
                     gameState.ownedMemes.push(rolledId);
                     alert(`🎉 Из коробки получен новый мем: ${rolledMeme.name}!`);
@@ -866,20 +818,13 @@
                 }
 
                 updateQuestProgress('open_box', 1);
-                if (boxType === 'gold') {
-                    updateQuestProgress('open_gold_box', 1);
-                }
-                
-                saveGame();
-                updateUI();
-                renderInventory();
-                renderIndex();
+                if (boxType === 'gold') updateQuestProgress('open_gold_box', 1);
+                saveGame(); updateUI(); renderInventory(); renderIndex();
             }, 400);
         }
 
         function formatTime(seconds) {
-            let m = Math.floor(seconds / 60);
-            let s = seconds % 60;
+            let m = Math.floor(seconds / 60); let s = seconds % 60;
             return `${m}:${s < 10 ? '0' : ''}${s}`;
         }
 
@@ -891,43 +836,51 @@
             statusDisplay.innerText = "Ферма запущена, идет фарм монет...";
             stopFarmBtn.style.display = "block";
 
-            cardVid.muted = true; 
-            cardVid.currentTime = 0;
-            
+            cardVid.muted = true; cardVid.currentTime = 0;
             let playPromise = cardVid.play();
             if (playPromise !== undefined) {
-                playPromise.then(() => {
-                    cardVid.muted = false;
-                }).catch(err => {
-                    console.log("Звук временно заблокирован браузером.", err);
-                    cardVid.muted = true;
-                    cardVid.play();
+                playPromise.then(() => { cardVid.muted = false; }).catch(() => {
+                    cardVid.muted = true; cardVid.play();
                 });
             }
+
+            let startTime = Date.now();
+            let durationMs = gameState.duration * 1000;
+            progressBar.style.backgroundColor = 'var(--success-color)';
+            
+            function updateMemeProgress() {
+                if (!isPlaying) return;
+                let elapsed = Date.now() - startTime;
+                let progress = Math.max(0, 100 - (elapsed / durationMs) * 100);
+                progressBar.style.width = progress + '%';
+                if (elapsed < durationMs) {
+                    progressAnimationId = requestAnimationFrame(updateMemeProgress);
+                }
+            }
+            progressAnimationId = requestAnimationFrame(updateMemeProgress);
 
             incomeInterval = setInterval(() => {
                 let generated = gameState.baseIncome * getFinalMultiplier();
                 gameState.coins += generated;
                 updateQuestProgress('coins', generated);
-                updateUI();
-                saveGame();
+                updateUI(); saveGame();
             }, 1000);
 
             mainTimeout = setTimeout(() => {
                 updateQuestProgress('activations', 1);
                 endFarmSequence();
-            }, gameState.duration * 1000);
+            }, durationMs);
         }
 
         function stopMemeFarm() {
             if (!isPlaying) return;
-            clearInterval(incomeInterval);
-            clearTimeout(mainTimeout);
+            cancelAnimationFrame(progressAnimationId);
             endFarmSequence();
         }
 
         function endFarmSequence() {
             clearInterval(incomeInterval);
+            clearTimeout(mainTimeout);
             cardVid.pause();
             memeCard.classList.remove('active');
             isPlaying = false;
@@ -939,22 +892,29 @@
             isCooldown = true;
             memeCard.classList.add('cooldown');
             statusDisplay.innerText = "Остывание карты...";
-
-            progressBar.style.transition = 'none';
-            progressBar.style.width = '100%';
+            progressBar.style.backgroundColor = 'var(--warning-color)';
             
-            setTimeout(() => {
-                progressBar.style.transition = `width ${gameState.cooldown}s linear`;
-                progressBar.style.width = '0%';
-            }, 50);
+            let startTime = Date.now();
+            let cooldownMs = gameState.cooldown * 1000;
+
+            function updateCooldownProgress() {
+                if (!isCooldown) return;
+                let elapsed = Date.now() - startTime;
+                let progress = Math.min(100, (elapsed / cooldownMs) * 100);
+                progressBar.style.width = progress + '%';
+                if (elapsed < cooldownMs) {
+                    requestAnimationFrame(updateCooldownProgress);
+                }
+            }
+            requestAnimationFrame(updateCooldownProgress);
 
             setTimeout(() => {
                 memeCard.classList.remove('cooldown');
                 statusDisplay.innerText = "Мем готов! Жми для запуска";
                 isCooldown = false;
-                updateUI();
-                saveGame();
-            }, gameState.cooldown * 1000);
+                progressBar.style.width = '0%';
+                updateUI(); saveGame();
+            }, cooldownMs);
         }
 
         function buyMultiplier() {
@@ -963,8 +923,7 @@
                 updateQuestProgress('spend', gameState.costs.multiplier);
                 gameState.levels.multiplier += 1;
                 gameState.costs.multiplier = Math.floor(gameState.costs.multiplier * 1.6);
-                updateUI();
-                saveGame();
+                updateUI(); saveGame();
             }
         }
 
@@ -975,8 +934,7 @@
                 gameState.duration += 1;
                 gameState.levels.duration += 1;
                 gameState.costs.duration = Math.floor(gameState.costs.duration * 1.5);
-                updateUI();
-                saveGame();
+                updateUI(); saveGame();
             }
         }
 
@@ -988,13 +946,11 @@
                 gameState.cooldown -= 0.5;
                 gameState.levels.cooldown += 1;
                 gameState.costs.cooldown = Math.floor(gameState.costs.cooldown * 2.2);
-                updateUI();
-                saveGame();
+                updateUI(); saveGame();
             }
         }
 
         setInterval(() => { updateUI(); }, 1000);
-
         loadGame();
         switchMeme(gameState.equippedMeme);
         updateUI();
