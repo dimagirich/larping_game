@@ -371,7 +371,8 @@
         </div>
     </div>
 
-    <script>
+   <script>
+        // РЕЕСТР МЕМОВ: Полностью возвращен к исходному рабочему виду
         const MEME_REGISTRY = {
             'sir': { id: 'sir', name: 'Excuse me sir!', mult: 1.0, rarity: 'Базовый', color: 'var(--rarity-common)', box: 'start', baseChance: 100 },
             'wobble': { id: 'wobble', name: 'Wobble meme', mult: 2.5, rarity: 'Обычный', color: '#aaaaaa', box: 'wood', baseChance: 40 },
@@ -379,13 +380,12 @@
             'giga': { id: 'giga', name: 'Gihachad', mult: 12.0, rarity: 'Редкий', color: 'var(--rarity-rare)', box: 'wood', baseChance: 15 },
             'pedro': { id: 'pedro', name: 'Pedro Raccoon', mult: 25.0, rarity: 'Эпический', color: 'var(--rarity-epic)', box: 'wood', baseChance: 8 },
             'congr': { id: 'congr', name: 'Congregation', mult: 50.0, rarity: 'Легендарный', color: 'var(--rarity-legendary)', box: 'wood', baseChance: 2 },
-            'congr_iron': { id: 'congr', name: 'Congregation', mult: 50.0, rarity: 'Обычный', color: '#aaaaaa', box: 'iron', baseChance: 45 },
             'sahur': { id: 'sahur', name: 'Sahur', mult: 65.0, rarity: 'Редкий', color: 'var(--rarity-rare)', box: 'iron', baseChance: 30 },
             'nectarynki': { id: 'nectarynki', name: 'Nectarynki', mult: 90.0, rarity: 'Эпический', color: 'var(--rarity-epic)', box: 'iron', baseChance: 12 },
             'tung': { id: 'tung', name: 'Tung', mult: 100.0, rarity: 'Эпический', color: 'var(--rarity-epic)', box: 'iron', baseChance: 10 },
             'sigma': { id: 'sigma', name: 'Sigma', mult: 140.0, rarity: 'Легендарный', color: 'var(--rarity-legendary)', box: 'iron', baseChance: 3 },
             'cow': { id: 'cow', name: 'Польская корова', mult: 160.0, rarity: 'Обычный', color: '#aaaaaa', box: 'gold', baseChance: 45 },
-            'ladder': { id: 'ladder', name: 'Лестница', mult: 280.0, rarity: 'Эпический', color: 'var(--rarity-epic)', box: 'gold', baseChance: 10 }, // Изменено по запросу!
+            'ladder': { id: 'ladder', name: 'Лестница', mult: 280.0, rarity: 'Эпический', color: 'var(--rarity-epic)', box: 'gold', baseChance: 10 },
             'cheremsha': { id: 'cheremsha', name: 'Черемша', mult: 260.0, rarity: 'Редкий', color: 'var(--rarity-rare)', box: 'gold', baseChance: 20 },
             'ai': { id: 'ai', name: 'Искусственный Интеллект', mult: 350.0, rarity: 'Легендарный', color: 'var(--rarity-legendary)', box: 'gold', baseChance: 19.5 },
             'mellstroy': { id: 'mellstroy', name: 'Мелстройность', mult: 600.0, rarity: 'Мифический', color: 'var(--rarity-mythic)', box: 'gold', baseChance: 0.5 }
@@ -477,8 +477,6 @@
                     if(!gameState.ownedMemes) gameState.ownedMemes = ['sir'];
                     if(!gameState.equippedMeme) gameState.equippedMeme = 'sir';
                     if(!gameState.usedPromos) gameState.usedPromos = [];
-                    
-                    gameState.ownedMemes = gameState.ownedMemes.map(m => m === 'congr' && !MEME_REGISTRY[m] ? 'congr_iron' : m);
                 } catch (e) {
                     gameState = JSON.parse(JSON.stringify(defaultState));
                 }
@@ -754,6 +752,7 @@
             const mData = MEME_REGISTRY[key] || MEME_REGISTRY['sir'];
             cardImg.src = `${mData.id}.jpg`;
             cardVid.src = `${mData.id}.mp4`;
+            cardVid.load();
         }
 
         function openMemeBox(boxType) {
@@ -769,13 +768,11 @@
                 emojiEl.classList.remove('shake');
                 let rolledId = 'sir';
                 let luckFactor = getPotionLuck();
-                
                 let pool = Object.keys(MEME_REGISTRY).filter(k => MEME_REGISTRY[k].box === boxType);
                 
                 if (boxType === 'gold') {
                     let totalWeight = pool.reduce((acc, k) => {
                         let base = MEME_REGISTRY[k].baseChance;
-                        // Бустим шансы только не-мифических мемов при зелье
                         if (k !== 'mellstroy') base *= luckFactor;
                         return acc + base;
                     }, 0);
@@ -833,11 +830,17 @@
             statusDisplay.innerText = "Ферма запущена, идет фарм монет...";
             stopFarmBtn.style.display = "block";
 
-            cardVid.muted = true; cardVid.currentTime = 0;
+            cardVid.muted = true; 
+            cardVid.currentTime = 0;
+            
             let playPromise = cardVid.play();
             if (playPromise !== undefined) {
-                playPromise.then(() => { cardVid.muted = false; }).catch(() => {
-                    cardVid.muted = true; cardVid.play();
+                playPromise.then(() => { 
+                    cardVid.muted = false; 
+                }).catch((error) => {
+                    console.log("Автовоспроизведение заблокировано системой безопасности. Переключаемся в тихий режим.", error);
+                    cardVid.muted = true;
+                    cardVid.play();
                 });
             }
 
