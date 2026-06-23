@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Excuse me sir! - Definitive Edition v3.1</title>
+    <title>Excuse me sir! - Definitive Edition v3.2</title>
     <style>
         :root {
             --bg-color: #121212;
@@ -147,7 +147,7 @@
         .index-card-title { font-size: 0.85rem; font-weight: bold; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; }
         .index-card-mult { font-size: 0.75rem; color: var(--gold-color); font-weight: bold; }
         .index-card-chance { font-size: 0.75rem; color: #00bcff; font-weight: bold; }
-        .index-status-tag { font-size: 0.7 room; font-weight: bold; padding: 2px 6px; border-radius: 4px; margin-top: 4px; }
+        .index-status-tag { font-size: 0.7rem; font-weight: bold; padding: 2px 6px; border-radius: 4px; margin-top: 4px; }
         .index-status-tag.have { background: rgba(40, 167, 69, 0.2); color: #2ecc71; }
         .index-status-tag.not-have { background: rgba(255,255,255,0.05); color: #777; }
 
@@ -210,14 +210,12 @@
 </head>
 <body>
 
-    <!-- ЛЕВАЯ ПАНЕЛЬ -->
     <div class="sidebar upgrade-sidebar">
         <div class="tabs-nav">
             <button class="tab-btn active" id="tab-btn-upgrades" onclick="switchTab('upgrades')">Улучшения</button>
             <button class="tab-btn" id="tab-btn-memes" onclick="switchTab('memes')">Рюкзак & Ферма</button>
         </div>
 
-        <!-- ВКЛАДКА 1: УЛУЧШЕНИЯ -->
         <div id="tab-upgrades" class="tab-content">
             <div class="card-panel">
                 <div class="card-header">
@@ -250,7 +248,6 @@
             </div>
         </div>
 
-        <!-- ВКЛАДКА 2: РЮКЗАК / МАГАЗИН ЯЩИКОВ -->
         <div id="tab-memes" class="tab-content" style="display: none;">
             <div class="index-menu-bar">
                 <button class="tab-btn active" id="subtab-btn-inv" onclick="switchSubTab('inv')">Магазин и Сумка</button>
@@ -314,12 +311,10 @@
             <div><span>Итоговый доход:</span> <span id="total-cps-val" style="color: var(--success-color); font-weight: bold;">10 💰/сек</span></div>
         </div>
 
-        <!-- КНОПКА ДЛЯ ПРОМОКОДОВ -->
         <button class="promo-btn" onclick="enterPromoCode()">Ввести промокод</button>
         <button class="reset-btn" onclick="resetGame()">Сбросить всё</button>
     </div>
 
-    <!-- ЦЕНТР (ИГРОВАЯ ЗОНА) -->
     <div class="game-container">
         <div class="stats-panel">
             <span class="coin-icon">💰</span>
@@ -339,7 +334,6 @@
         <button class="action-btn stop-btn" id="stop-farm-btn" onclick="stopMemeFarm()">🛑 Остановить фарм</button>
     </div>
 
-    <!-- ПРАВАЯ ПАНЕЛЬ (КВЕСТЫ) -->
     <div class="sidebar boost-sidebar">
         <h2>Задания и Квесты</h2>
         
@@ -391,9 +385,9 @@
             'tung': { id: 'tung', name: 'Tung', mult: 100.0, rarity: 'Эпический', color: 'var(--rarity-epic)', box: 'iron', baseChance: 10 },
             'sigma': { id: 'sigma', name: 'Sigma', mult: 140.0, rarity: 'Легендарный', color: 'var(--rarity-legendary)', box: 'iron', baseChance: 3 },
             'cow': { id: 'cow', name: 'Польская корова', mult: 160.0, rarity: 'Обычный', color: '#aaaaaa', box: 'gold', baseChance: 45 },
-            'ladder': { id: 'ladder', name: 'Лестница', mult: 200.0, rarity: 'Эпический', color: 'var(--rarity-epic)', box: 'gold', baseChance: 25 },
+            'ladder': { id: 'ladder', name: 'Лестница', mult: 280.0, rarity: 'Эпический', color: 'var(--rarity-epic)', box: 'gold', baseChance: 10 }, // Изменено по запросу!
             'cheremsha': { id: 'cheremsha', name: 'Черемша', mult: 260.0, rarity: 'Редкий', color: 'var(--rarity-rare)', box: 'gold', baseChance: 20 },
-            'ai': { id: 'ai', name: 'Искусственный Интеллект', mult: 350.0, rarity: 'Легендарный', color: 'var(--rarity-legendary)', box: 'gold', baseChance: 9.5 },
+            'ai': { id: 'ai', name: 'Искусственный Интеллект', mult: 350.0, rarity: 'Легендарный', color: 'var(--rarity-legendary)', box: 'gold', baseChance: 19.5 },
             'mellstroy': { id: 'mellstroy', name: 'Мелстройность', mult: 600.0, rarity: 'Мифический', color: 'var(--rarity-mythic)', box: 'gold', baseChance: 0.5 }
         };
 
@@ -510,7 +504,6 @@
             }
         }
 
-        // ИЗМЕНЕНО ОБРАТНО НА 50 000 МОНЕТ
         function enterPromoCode() {
             let code = prompt("Введите промокод:");
             if (code === null) return;
@@ -518,7 +511,7 @@
                 if (gameState.usedPromos.includes("Tehnosemya1")) {
                     alert("Этот промокод уже был активирован!");
                 } else {
-                    gameState.coins += 50000; // НАГРАДА ИЗМЕНЕНА НА 50к
+                    gameState.coins += 50000;
                     gameState.usedPromos.push("Tehnosemya1");
                     alert("Промокод успешно активирован! Зачислено 50к монет.");
                     saveGame(); updateUI();
@@ -641,7 +634,7 @@
             up3Lvl.innerText = `Ур. ${gameState.levels.cooldown}`;
 
             document.getElementById('up1-btn').disabled = gameState.coins < gameState.costs.multiplier;
-            document.getElementById('up2-btn').disabled = gameState.costs.duration;
+            document.getElementById('up2-btn').disabled = gameState.coins < gameState.costs.duration;
             document.getElementById('buy-wood-btn').disabled = gameState.coins < 5000;   
             document.getElementById('buy-iron-btn').disabled = gameState.coins < 50000;  
             document.getElementById('buy-gold-btn').disabled = gameState.coins < 500000;  
@@ -780,14 +773,23 @@
                 let pool = Object.keys(MEME_REGISTRY).filter(k => MEME_REGISTRY[k].box === boxType);
                 
                 if (boxType === 'gold') {
-                    let mChance = 0.5 * luckFactor;
-                    let lChance = 9.5 * luckFactor;
-                    let roll = Math.random() * 100;
-                    if (roll < mChance) rolledId = 'mellstroy';
-                    else if (roll < (mChance + lChance)) rolledId = 'ai';
-                    else {
-                        let remaining = ['cow', 'ladder', 'cheremsha'];
-                        rolledId = remaining[Math.floor(Math.random() * remaining.length)];
+                    let totalWeight = pool.reduce((acc, k) => {
+                        let base = MEME_REGISTRY[k].baseChance;
+                        // Бустим шансы только не-мифических мемов при зелье
+                        if (k !== 'mellstroy') base *= luckFactor;
+                        return acc + base;
+                    }, 0);
+                    
+                    let roll = Math.random() * totalWeight;
+                    let currentSum = 0;
+                    for (let key of pool) {
+                        let weight = MEME_REGISTRY[key].baseChance;
+                        if (key !== 'mellstroy') weight *= luckFactor;
+                        currentSum += weight;
+                        if (roll <= currentSum) {
+                            rolledId = key;
+                            break;
+                        }
                     }
                 } else {
                     let totalWeight = pool.reduce((acc, k) => acc + MEME_REGISTRY[k].baseChance, 0);
